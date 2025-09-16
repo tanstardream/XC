@@ -140,6 +140,181 @@
             50% { transform: translateY(-20px) rotate(10deg); }
         }
 
+        /* 增强的背景效果 */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(138, 43, 226, 0.03) 50%, transparent 70%);
+            animation: backgroundShift 20s infinite linear;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        @keyframes backgroundShift {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* 搜索建议下拉框 */
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 0 0 20px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: none;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1002;
+            display: none;
+        }
+
+        .search-suggestion-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-suggestion-item:hover {
+            background: rgba(138, 43, 226, 0.2);
+        }
+
+        .search-suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-suggestion-icon {
+            opacity: 0.6;
+        }
+
+        /* 增强的网站卡片悬停效果 */
+        .website-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .website-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            opacity: 0;
+        }
+
+        .website-card:hover::before {
+            animation: shimmer 1.5s ease-in-out;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+        }
+
+        /* 加载动画 */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 通知提示 */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 15px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow);
+            z-index: 2001;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left: 4px solid #4CAF50;
+        }
+
+        .notification.error {
+            border-left: 4px solid #f44336;
+        }
+
+        .notification.info {
+            border-left: 4px solid #2196F3;
+        }
+
+        /* 快速访问栏 */
+        .quick-access {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1500;
+        }
+
+        .quick-access-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light);
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--card-shadow);
+        }
+
+        .quick-access-btn:hover {
+            transform: scale(1.1);
+            background: var(--gradient);
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.3);
+        }
+
+        /* 改进的搜索框容器 */
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+        }
+
         /* 小部件样式 */
         .widget {
             background: var(--card-bg);
@@ -273,20 +448,124 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
-            transition: background-color 0.5s ease;
+            transition: all 0.5s ease;
             font-family: var(--font-family);
             font-size: var(--font-size);
         }
 
+        /* 白天主题 */
         body.light-theme {
-            --dark: #f0f2f5;
-            --light: #1a1a2e;
-            --card-bg: rgba(255, 255, 255, 0.7);
-            background: #f0f2f5;
+            --dark: #f8fafc;
+            --light: #1e293b;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
             background-image:
-                    radial-gradient(circle at 10% 20%, rgba(102, 126, 234, 0.1) 0%, transparent 40%),
-                    radial-gradient(circle at 90% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 40%);
-            color: #1a1a2e;
+                    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.1) 0%, transparent 50%);
+            color: #1e293b;
+        }
+
+        /* 黑夜主题（默认） */
+        body.dark-theme, body:not(.light-theme) {
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            background: #0f172a;
+            background-image:
+                    radial-gradient(circle at 10% 20%, rgba(100, 43, 115, 0.3) 0%, transparent 40%),
+                    radial-gradient(circle at 90% 80%, rgba(65, 105, 225, 0.3) 0%, transparent 40%),
+                    radial-gradient(circle at 50% 50%, rgba(138, 43, 226, 0.1) 0%, transparent 60%);
+            color: #f8fafc;
+        }
+
+        /* 主题切换按钮样式 */
+        .theme-toggle {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1500;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(138, 43, 226, 0.4);
+        }
+
+        .theme-toggle-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.6s ease;
+        }
+
+        .theme-toggle.rotating .theme-toggle-inner {
+            transform: rotateY(180deg);
+        }
+
+        .theme-icon {
+            font-size: 24px;
+            transition: all 0.3s ease;
+            position: absolute;
+        }
+
+        .theme-icon.sun {
+            color: #fbbf24;
+            opacity: 0;
+            transform: rotate(-90deg) scale(0.5);
+        }
+
+        .theme-icon.moon {
+            color: #60a5fa;
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        body.light-theme .theme-icon.sun {
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        body.light-theme .theme-icon.moon {
+            opacity: 0;
+            transform: rotate(90deg) scale(0.5);
+        }
+
+        /* 主题过渡遮罩 */
+        .theme-transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+                        rgba(0, 0, 0, 0.8) 0%, 
+                        transparent 70%);
+            transition: opacity 0.5s ease;
+        }
+
+        .theme-transition-overlay.active {
+            opacity: 1;
         }
 
         /* 星空背景 */
@@ -362,8 +641,167 @@
         }
 
         body.light-theme header {
-            background: rgba(240, 242, 245, 0.8);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            background: rgba(248, 250, 252, 0.9);
+            border-bottom: 1px solid rgba(30, 41, 59, 0.1);
+            box-shadow: 0 4px 20px rgba(30, 41, 59, 0.1);
+        }
+
+        body.light-theme nav a {
+            color: #1e293b;
+        }
+
+        body.light-theme nav a:hover {
+            background: rgba(30, 41, 59, 0.1);
+        }
+
+        body.light-theme .settings-menu {
+            background: rgba(248, 250, 252, 0.95);
+            border: 1px solid rgba(30, 41, 59, 0.1);
+        }
+
+        body.light-theme .settings-header {
+            border-bottom: 1px solid rgba(30, 41, 59, 0.1);
+        }
+
+        body.light-theme .settings-header h3 {
+            color: #1e293b;
+        }
+
+        body.light-theme .close-settings {
+            color: #1e293b;
+        }
+
+        body.light-theme .setting-item {
+            border-bottom: 1px solid rgba(30, 41, 59, 0.05);
+        }
+
+        body.light-theme .setting-select {
+            background: rgba(30, 41, 59, 0.05);
+            border: 1px solid rgba(30, 41, 59, 0.1);
+            color: #1e293b;
+        }
+
+        body.light-theme .search-box {
+            background: rgba(248, 250, 252, 0.9);
+            border: 1px solid rgba(30, 41, 59, 0.1);
+            box-shadow: 0 4px 20px rgba(30, 41, 59, 0.1);
+        }
+
+        body.light-theme .engine-select {
+            background: rgba(30, 41, 59, 0.05);
+            color: #1e293b;
+        }
+
+        body.light-theme .engine-icon {
+            color: #1e293b;
+        }
+
+        body.light-theme .search-text {
+            color: #1e293b;
+        }
+
+        body.light-theme .search-text::placeholder {
+            color: rgba(30, 41, 59, 0.5);
+        }
+
+        body.light-theme .engine-indicator {
+            color: rgba(30, 41, 59, 0.7);
+        }
+
+        body.light-theme .website-card {
+            background: rgba(248, 250, 252, 0.8);
+            border: 1px solid rgba(30, 41, 59, 0.1);
+            box-shadow: 0 4px 15px rgba(30, 41, 59, 0.1);
+        }
+
+        body.light-theme .website-card:hover {
+            box-shadow: 0 8px 25px rgba(30, 41, 59, 0.15);
+        }
+
+        body.light-theme .website-card::after {
+            background: #f8fafc;
+        }
+
+        body.light-theme .website-card h3 {
+            color: #1e293b;
+        }
+
+        body.light-theme .website-card p {
+            color: rgba(30, 41, 59, 0.7);
+        }
+
+        body.light-theme .weather-temp {
+            color: #1e293b;
+        }
+
+        body.light-theme .widget {
+            background: rgba(248, 250, 252, 0.8);
+            border: 1px solid rgba(30, 41, 59, 0.1);
+        }
+
+        body.light-theme .widget-content {
+            color: #1e293b;
+        }
+
+        body.light-theme .note-btn {
+            color: #1e293b;
+        }
+
+        body.light-theme .note-item {
+            background: rgba(30, 41, 59, 0.05);
+        }
+
+        body.light-theme .note-input {
+            background: rgba(30, 41, 59, 0.05);
+            color: #1e293b;
+        }
+
+        body.light-theme .weather-detail-item {
+            background: rgba(30, 41, 59, 0.05);
+        }
+
+        body.light-theme .weather-location {
+            background: rgba(30, 41, 59, 0.05);
+        }
+
+        body.light-theme .forecast-item {
+            background: rgba(30, 41, 59, 0.05);
+        }
+
+        body.light-theme .quick-access-btn {
+            background: rgba(248, 250, 252, 0.9);
+            border: 1px solid rgba(30, 41, 59, 0.1);
+            color: #1e293b;
+        }
+
+        body.light-theme .notification {
+            background: rgba(248, 250, 252, 0.95);
+            border: 1px solid rgba(30, 41, 59, 0.1);
+            color: #1e293b;
+        }
+
+        body.light-theme .search-suggestions {
+            background: rgba(248, 250, 252, 0.95);
+            border: 1px solid rgba(30, 41, 59, 0.1);
+        }
+
+        body.light-theme .search-suggestion-item {
+            border-bottom: 1px solid rgba(30, 41, 59, 0.05);
+            color: #1e293b;
+        }
+
+        body.light-theme .search-suggestion-item:hover {
+            background: rgba(30, 41, 59, 0.1);
+        }
+
+        body.light-theme .theme-toggle {
+            background: rgba(248, 250, 252, 0.9);
+            border: 1px solid rgba(30, 41, 59, 0.1);
+            box-shadow: 0 4px 15px rgba(30, 41, 59, 0.1);
+        }
+
+        body.light-theme .theme-toggle:hover {
+            box-shadow: 0 8px 25px rgba(30, 41, 59, 0.2);
         }
 
         .logo {
@@ -902,21 +1340,172 @@
             opacity: 1;
         }
 
-        /* 天气小部件 */
-        .weather-widget {
-            margin: 30px 0;
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 20px;
-            backdrop-filter: blur(10px);
-            width: 100%;
-            max-width: 300px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: var(--card-shadow);
+        /* 天气小部件样式 */
+        .weather-display {
+            text-align: center;
+            margin-bottom: 15px;
         }
 
-        body.light-theme .weather-widget {
-            border: 1px solid rgba(0, 0, 0, 0.05);
+        .weather-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+            opacity: 0.7;
+        }
+
+        .weather-info {
+            display: none;
+        }
+
+        .weather-info.loaded {
+            display: block;
+        }
+
+        .weather-main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .weather-icon {
+            font-size: 3rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .weather-temp {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--light);
+        }
+
+        body.light-theme .weather-temp {
+            color: #1a1a2e;
+        }
+
+        .weather-description {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 15px;
+            text-transform: capitalize;
+        }
+
+        .weather-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .weather-detail-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .weather-detail-item i {
+            opacity: 0.7;
+        }
+
+        .weather-location {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .weather-location-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .weather-forecast {
+            margin-top: 15px;
+        }
+
+        .forecast-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .forecast-items {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .forecast-item {
+            min-width: 80px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 8px;
+            border-radius: 8px;
+        }
+
+        .forecast-day {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+
+        .forecast-icon {
+            font-size: 1.5rem;
+            margin: 5px 0;
+        }
+
+        .forecast-temp {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* 天气图标动画 */
+        .weather-icon.sunny {
+            color: #FFC107;
+            animation: sunny 4s ease-in-out infinite;
+        }
+
+        .weather-icon.cloudy {
+            color: #9E9E9E;
+        }
+
+        .weather-icon.rainy {
+            color: #2196F3;
+            animation: rainy 2s ease-in-out infinite;
+        }
+
+        .weather-icon.snowy {
+            color: #E3F2FD;
+            animation: snowy 3s ease-in-out infinite;
+        }
+
+        @keyframes sunny {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(10deg) scale(1.1); }
+        }
+
+        @keyframes rainy {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        @keyframes snowy {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
         }
 
         /* 页脚 */
@@ -1469,26 +2058,60 @@
                 width: 90%;
                 right: 5%;
             }
+
+            .quick-access {
+                right: 10px;
+            }
+
+            .notification {
+                right: 10px;
+                max-width: calc(100% - 20px);
+            }
         }
 
         @media (max-width: 600px) {
             .websites-grid {
                 grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 15px;
             }
 
             .website-card {
                 padding: 20px 15px;
             }
 
+            .search-container {
+                width: 100%;
+            }
+
             .search-box {
                 width: 100%;
-                flex-wrap: wrap;
+                flex-direction: column;
+                padding: 10px;
+                border-radius: 20px;
             }
 
             .engine-selector {
-                min-width: 100%;
+                width: 100%;
                 margin-right: 0;
                 margin-bottom: 10px;
+            }
+
+            .engine-select {
+                width: 100%;
+                border-radius: 15px;
+            }
+
+            .search-text {
+                width: 100%;
+                border-radius: 15px;
+                margin-bottom: 10px;
+                font-size: 16px;
+            }
+
+            .search-btn {
+                width: 100%;
+                height: 50px;
+                border-radius: 15px;
             }
 
             .search-title {
@@ -1497,6 +2120,111 @@
 
             .favorites-grid, .discover-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .widgets-container {
+                grid-template-columns: 1fr !important;
+            }
+
+            .quick-access {
+                right: 10px;
+                bottom: 20px;
+                top: auto;
+                transform: none;
+                flex-direction: row;
+                gap: 10px;
+            }
+
+            .quick-access-btn {
+                width: 45px;
+                height: 45px;
+            }
+
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+
+            .setting-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .setting-label {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+                margin-top: 130px;
+            }
+
+            .search-title {
+                font-size: 1.5rem;
+                margin-bottom: 15px;
+            }
+
+            .website-card {
+                padding: 15px 10px;
+            }
+
+            .website-card img {
+                width: 45px;
+                height: 45px;
+            }
+
+            .website-card h3 {
+                font-size: 16px;
+            }
+
+            .widget {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+
+            .clock {
+                font-size: 2rem;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .notification {
+                font-size: 14px;
+            }
+        }
+
+        /* 横屏平板适配 */
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+            .container {
+                margin-top: 120px;
+            }
+
+            .websites-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+
+            .widgets-container {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+            }
+        }
+
+        /* 高分辨率屏幕优化 */
+        @media (min-width: 1400px) {
+            .container {
+                max-width: 1600px;
+            }
+
+            .websites-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+
+            .search-title {
+                font-size: 3rem;
             }
         }
 
@@ -1527,6 +2255,9 @@
 <!-- 星空背景 -->
 <div class="starry-bg" id="starry-bg"></div>
 
+<!-- 动画背景 -->
+<div class="animated-bg" id="animated-bg"></div>
+
 <!-- 樱花特效容器 -->
 <div id="sakura-container"></div>
 
@@ -1538,6 +2269,33 @@
 
 <!-- 彩带特效容器 -->
 <div id="ribbons-container"></div>
+
+<!-- 快速访问栏 -->
+<div class="quick-access" id="quick-access">
+    <div class="quick-access-btn" title="返回顶部" id="scroll-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    <div class="quick-access-btn" title="随机网站" id="random-site">
+        <i class="fas fa-random"></i>
+    </div>
+    <div class="quick-access-btn" title="全屏模式" id="fullscreen-toggle">
+        <i class="fas fa-expand"></i>
+    </div>
+</div>
+
+<!-- 通知容器 -->
+<div id="notification-container"></div>
+
+<!-- 主题切换按钮 -->
+<div class="theme-toggle" id="theme-toggle" title="切换白天/黑夜模式">
+    <div class="theme-toggle-inner">
+        <i class="fas fa-sun theme-icon sun"></i>
+        <i class="fas fa-moon theme-icon moon"></i>
+    </div>
+</div>
+
+<!-- 主题过渡遮罩 -->
+<div class="theme-transition-overlay" id="theme-transition-overlay"></div>
 
 <!-- 搜索引擎管理模态框 -->
 <div class="engine-modal" id="engine-modal">
@@ -1594,20 +2352,6 @@
                         </button>
                     </div>
 
-                    <!-- 主题设置 -->
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <i class="fas fa-paint-brush"></i>
-                            <span>主题颜色</span>
-                        </div>
-                        <select class="setting-select" id="theme-select">
-                            <option value="purple">紫色主题</option>
-                            <option value="green">绿色主题</option>
-                            <option value="orange">橙色主题</option>
-                            <option value="pink">粉色主题</option>
-                        </select>
-                    </div>
-                    
                     <!-- 布局设置 -->
                     <div class="setting-item">
                         <div class="setting-label">
@@ -1647,16 +2391,6 @@
                         </select>
                     </div>
 
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <i class="fas fa-moon"></i>
-                            <span>深色模式</span>
-                        </div>
-                        <label class="switch">
-                            <input type="checkbox" id="theme-toggle">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
 
                     <div class="setting-item">
                         <div class="setting-label">
@@ -1753,12 +2487,45 @@
                         <div style="font-size: 0.8rem; opacity: 0.8; line-height: 1.4;">
                             <div>搜索: Ctrl+K 或 /</div>
                             <div>设置: Ctrl+,</div>
+                            <div>主题切换: Ctrl+Shift+T</div>
                         </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-clock"></i>
+                            <span>自动主题切换</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="auto-theme-setting">
+                            <span class="slider"></span>
+                        </label>
                     </div>
 
                     <button class="add-favorite-btn" id="save-settings-btn" style="width: 100%; justify-content: center; margin-top: 15px;">
                         <i class="fas fa-save"></i>保存设置
                     </button>
+
+                    <!-- 数据管理 -->
+                    <div class="setting-item" style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 15px; margin-top: 15px;">
+                        <div class="setting-label">
+                            <i class="fas fa-database"></i>
+                            <span>数据管理</span>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button class="add-favorite-btn" id="export-data-btn" style="flex: 1; font-size: 0.8rem; padding: 8px;">
+                            <i class="fas fa-download"></i>导出
+                        </button>
+                        <button class="add-favorite-btn" id="import-data-btn" style="flex: 1; font-size: 0.8rem; padding: 8px;">
+                            <i class="fas fa-upload"></i>导入
+                        </button>
+                        <button class="add-favorite-btn" id="reset-data-btn" style="flex: 1; font-size: 0.8rem; padding: 8px; background: linear-gradient(135deg, #f44336, #d32f2f);">
+                            <i class="fas fa-trash"></i>重置
+                        </button>
+                    </div>
+                    <input type="file" id="import-file-input" accept=".json" style="display: none;">
                 </div>
             </li>
         </ul>
@@ -1770,25 +2537,32 @@
     <div id="home" class="content-section active">
         <div class="search-section">
             <h2 class="search-title">探索无限可能</h2>
-            <div class="search-box">
-                <!-- 搜索引擎选择器 -->
-                <div class="engine-selector">
-                    <select class="engine-select" id="engine-select">
-                        <option value="baidu">百度</option>
-                        <option value="google">谷歌</option>
-                        <option value="bing">必应</option>
-                        <option value="sogou">搜狗</option>
-                        <option value="360">360搜索</option>
-                    </select>
-                    <div class="engine-icon" id="engine-icon-display">
-                        <i class="fab fa-baidu"></i>
+            <div class="search-container">
+                <div class="search-box">
+                    <!-- 搜索引擎选择器 -->
+                    <div class="engine-selector">
+                        <select class="engine-select" id="engine-select">
+                            <option value="baidu">百度</option>
+                            <option value="google">谷歌</option>
+                            <option value="bing">必应</option>
+                            <option value="sogou">搜狗</option>
+                            <option value="360">360搜索</option>
+                        </select>
+                        <div class="engine-icon" id="engine-icon-display">
+                            <i class="fab fa-baidu"></i>
+                        </div>
                     </div>
-                </div>
 
-                <input type="text" class="search-text" name="inputs" placeholder="在这里输入你想要搜的... (快捷键: Ctrl+K 或 /)">
-                <a class="search-btn" onclick="performSearch()">
-                    <i class="fas fa-search"></i>
-                </a>
+                    <input type="text" class="search-text" name="inputs" placeholder="在这里输入你想要搜的... (快捷键: Ctrl+K 或 /)" id="search-input">
+                    <a class="search-btn" onclick="performSearch()">
+                        <i class="fas fa-search"></i>
+                    </a>
+                </div>
+                
+                <!-- 搜索建议下拉框 -->
+                <div class="search-suggestions" id="search-suggestions">
+                    <!-- 搜索建议将通过JS动态生成 -->
+                </div>
             </div>
             <div class="engine-indicator">
                 <span class="indicator"></span>
@@ -1898,10 +2672,30 @@
             </div>
 
             <!-- 天气小部件 -->
-            <div class="weather-widget" id="ww_e6e82951c40cb" v='1.3' loc='id'
-                 a='{"t":"responsive","lang":"zh","sl_lpl":1,"ids":[],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"image",
-                     "cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>
-                <a href="https://weatherwidget.org/" id="ww_e6e82951c40cb_u" target="_blank">Html weather widget</a>
+            <div class="widget">
+                <div class="widget-header">
+                    <h3 class="widget-title"><i class="fas fa-cloud-sun"></i> 天气</h3>
+                    <button class="note-btn" id="refresh-weather" title="刷新天气">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="widget-content">
+                    <div class="weather-display" id="weather-display">
+                        <div class="weather-loading">
+                            <div class="loading-spinner"></div>
+                            <span>正在获取天气信息...</span>
+                        </div>
+                    </div>
+                    <div class="weather-location" id="weather-location">
+                        <div class="weather-location-info">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="location-text">获取位置中...</span>
+                        </div>
+                        <button class="note-btn" id="change-location" title="更改城市">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -2096,7 +2890,6 @@
 <script>
     // 用户设置
     const userSettings = {
-        theme: 'purple',
         layout: 'grid', 
         fontSize: 'medium',
         fontFamily: 'default',
@@ -2106,7 +2899,7 @@
             snow: false,
             ribbons: false
         },
-        darkMode: false
+        autoTheme: false
     };
 
     // 创建星空背景
@@ -2387,6 +3180,431 @@
         }
     }
 
+    // 搜索历史和建议
+    let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+    const searchSuggestions = [
+        '天气预报', '在线翻译', '新闻资讯', '股票行情', '电影推荐',
+        '音乐播放', '小说阅读', '游戏下载', '学习资料', '技术教程'
+    ];
+
+    // 通知系统
+    function showNotification(message, type = 'info', duration = 3000) {
+        const container = document.getElementById('notification-container');
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        container.appendChild(notification);
+        
+        // 显示通知
+        setTimeout(() => notification.classList.add('show'), 100);
+        
+        // 自动隐藏
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => container.removeChild(notification), 300);
+        }, duration);
+    }
+
+    // 搜索建议功能
+    function initSearchSuggestions() {
+        const searchInput = document.getElementById('search-input');
+        const suggestionsContainer = document.getElementById('search-suggestions');
+        
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            if (query.length < 2) {
+                suggestionsContainer.style.display = 'none';
+                return;
+            }
+            
+            // 合并搜索历史和预设建议
+            const allSuggestions = [...new Set([...searchHistory, ...searchSuggestions])];
+            const filteredSuggestions = allSuggestions
+                .filter(suggestion => suggestion.toLowerCase().includes(query.toLowerCase()))
+                .slice(0, 8);
+            
+            if (filteredSuggestions.length > 0) {
+                suggestionsContainer.innerHTML = filteredSuggestions
+                    .map(suggestion => `
+                        <div class="search-suggestion-item" data-suggestion="${suggestion}">
+                            <i class="fas fa-search search-suggestion-icon"></i>
+                            <span>${suggestion}</span>
+                        </div>
+                    `).join('');
+                
+                suggestionsContainer.style.display = 'block';
+                
+                // 添加点击事件
+                suggestionsContainer.querySelectorAll('.search-suggestion-item').forEach(item => {
+                    item.addEventListener('click', function() {
+                        const suggestion = this.getAttribute('data-suggestion');
+                        searchInput.value = suggestion;
+                        suggestionsContainer.style.display = 'none';
+                        performSearch();
+                    });
+                });
+            } else {
+                suggestionsContainer.style.display = 'none';
+            }
+        });
+        
+        // 点击外部隐藏建议
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+                suggestionsContainer.style.display = 'none';
+            }
+        });
+    }
+
+    // 快速访问功能
+    function initQuickAccess() {
+        // 返回顶部
+        document.getElementById('scroll-to-top').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+            showNotification('已返回顶部', 'success', 2000);
+        });
+        
+        // 随机网站
+        document.getElementById('random-site').addEventListener('click', function() {
+            const websites = document.querySelectorAll('.website-card a');
+            if (websites.length > 0) {
+                const randomIndex = Math.floor(Math.random() * websites.length);
+                const randomSite = websites[randomIndex];
+                randomSite.click();
+                showNotification('正在打开随机网站...', 'info', 2000);
+            }
+        });
+        
+        // 全屏切换
+        let isFullscreen = false;
+        document.getElementById('fullscreen-toggle').addEventListener('click', function() {
+            if (!isFullscreen) {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) {
+                    document.documentElement.msRequestFullscreen();
+                }
+                this.innerHTML = '<i class="fas fa-compress"></i>';
+                showNotification('已进入全屏模式', 'success', 2000);
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                this.innerHTML = '<i class="fas fa-expand"></i>';
+                showNotification('已退出全屏模式', 'success', 2000);
+            }
+            isFullscreen = !isFullscreen;
+        });
+        
+        // 监听全屏状态变化
+        document.addEventListener('fullscreenchange', function() {
+            const fullscreenBtn = document.getElementById('fullscreen-toggle');
+            if (!document.fullscreenElement) {
+                fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                isFullscreen = false;
+            }
+        });
+    }
+
+    // 增强的搜索功能
+    function performSearchEnhanced() {
+        const engineKey = document.getElementById('engine-select').value;
+        const engine = searchEngines.find(e => e.id === engineKey);
+        if (!engine) return;
+
+        const query = document.getElementById('search-input').value.trim();
+
+        if (query) {
+            // 添加到搜索历史
+            if (!searchHistory.includes(query)) {
+                searchHistory.unshift(query);
+                searchHistory = searchHistory.slice(0, 10); // 只保留最近10条
+                localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+            }
+            
+            // 显示加载状态
+            const searchBtn = document.querySelector('.search-btn');
+            const originalHTML = searchBtn.innerHTML;
+            searchBtn.innerHTML = '<div class="loading-spinner"></div>';
+            
+            // 模拟加载延迟
+            setTimeout(() => {
+                searchBtn.innerHTML = originalHTML;
+                window.open(engine.url + encodeURIComponent(query), '_blank');
+                showNotification(`正在使用${engine.name}搜索: ${query}`, 'info', 2000);
+            }, 500);
+            
+            // 隐藏建议框
+            document.getElementById('search-suggestions').style.display = 'none';
+        } else {
+            // 添加抖动效果提示用户输入
+            const searchBox = document.querySelector('.search-box');
+            searchBox.style.animation = 'shake 0.5s';
+            setTimeout(() => {
+                searchBox.style.animation = '';
+            }, 500);
+            showNotification('请输入搜索关键词', 'error', 2000);
+        }
+    }
+
+    // 主题切换功能
+    let isDarkTheme = true;
+    
+    function initThemeToggle() {
+        // 从localStorage读取主题设置
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            isDarkTheme = false;
+            document.body.classList.add('light-theme');
+        } else {
+            isDarkTheme = true;
+            document.body.classList.remove('light-theme');
+        }
+        
+        // 主题切换按钮点击事件
+        document.getElementById('theme-toggle').addEventListener('click', function(e) {
+            toggleTheme(e);
+        });
+    }
+    
+    function toggleTheme(event) {
+        const themeToggle = document.getElementById('theme-toggle');
+        const overlay = document.getElementById('theme-transition-overlay');
+        
+        // 获取点击位置
+        const rect = themeToggle.getBoundingClientRect();
+        const x = ((rect.left + rect.width / 2) / window.innerWidth) * 100;
+        const y = ((rect.top + rect.height / 2) / window.innerHeight) * 100;
+        
+        // 设置过渡遮罩的中心点
+        overlay.style.setProperty('--x', x + '%');
+        overlay.style.setProperty('--y', y + '%');
+        
+        // 添加旋转动画
+        themeToggle.classList.add('rotating');
+        
+        // 显示过渡遮罩
+        overlay.classList.add('active');
+        
+        // 延迟切换主题
+        setTimeout(() => {
+            isDarkTheme = !isDarkTheme;
+            
+            if (isDarkTheme) {
+                document.body.classList.remove('light-theme');
+                localStorage.setItem('theme', 'dark');
+                showNotification('已切换到黑夜模式 🌙', 'success', 2000);
+            } else {
+                document.body.classList.add('light-theme');
+                localStorage.setItem('theme', 'light');
+                showNotification('已切换到白天模式 ☀️', 'success', 2000);
+            }
+            
+            // 保存设置
+            saveSettings();
+            
+        }, 250);
+        
+        // 移除过渡效果
+        setTimeout(() => {
+            overlay.classList.remove('active');
+            themeToggle.classList.remove('rotating');
+        }, 600);
+    }
+    
+    // 根据时间自动切换主题
+    function autoThemeSwitch() {
+        if (!userSettings.autoTheme) return;
+        
+        const hour = new Date().getHours();
+        const isNightTime = hour >= 19 || hour < 7; // 晚上7点到早上7点
+        
+        if (isNightTime && !isDarkTheme) {
+            toggleTheme();
+            showNotification('已自动切换到夜间模式 🌙', 'info', 2000);
+        } else if (!isNightTime && isDarkTheme) {
+            toggleTheme();
+            showNotification('已自动切换到日间模式 ☀️', 'info', 2000);
+        }
+    }
+    
+    // 启动自动主题检查定时器
+    function startAutoThemeTimer() {
+        // 每30分钟检查一次
+        setInterval(() => {
+            if (userSettings.autoTheme) {
+                autoThemeSwitch();
+            }
+        }, 30 * 60 * 1000);
+    }
+    
+    // 键盘快捷键切换主题
+    function initThemeKeyboard() {
+        document.addEventListener('keydown', function(e) {
+            // Ctrl + Shift + T 切换主题
+            if (e.ctrlKey && e.shiftKey && e.key === 'T') {
+                e.preventDefault();
+                toggleTheme();
+            }
+        });
+    }
+
+    // 天气功能
+    let currentCity = '北京';
+    
+    function initWeather() {
+        loadWeatherData();
+        
+        // 刷新天气按钮
+        document.getElementById('refresh-weather').addEventListener('click', function() {
+            this.style.animation = 'spin 1s ease-in-out';
+            setTimeout(() => {
+                this.style.animation = '';
+            }, 1000);
+            loadWeatherData();
+            showNotification('正在刷新天气信息...', 'info', 2000);
+        });
+        
+        // 更改城市按钮
+        document.getElementById('change-location').addEventListener('click', function() {
+            const newCity = prompt('请输入城市名称:', currentCity);
+            if (newCity && newCity.trim() !== '') {
+                currentCity = newCity.trim();
+                localStorage.setItem('weather_city', currentCity);
+                loadWeatherData();
+                showNotification(`已切换到${currentCity}`, 'success', 2000);
+            }
+        });
+        
+        // 从localStorage读取保存的城市
+        const savedCity = localStorage.getItem('weather_city');
+        if (savedCity) {
+            currentCity = savedCity;
+        }
+    }
+    
+    function loadWeatherData() {
+        const weatherDisplay = document.getElementById('weather-display');
+        const locationText = document.getElementById('location-text');
+        
+        locationText.textContent = currentCity;
+        
+        // 显示加载状态
+        weatherDisplay.innerHTML = `
+            <div class="weather-loading">
+                <div class="loading-spinner"></div>
+                <span>正在获取天气信息...</span>
+            </div>
+        `;
+        
+        // 模拟天气数据（实际应用中应该调用真实的天气API）
+        setTimeout(() => {
+            const mockWeatherData = generateMockWeather();
+            displayWeatherData(mockWeatherData);
+        }, 1500);
+    }
+    
+    function generateMockWeather() {
+        const conditions = [
+            { icon: 'fas fa-sun', class: 'sunny', desc: '晴朗', temp: 25 },
+            { icon: 'fas fa-cloud-sun', class: 'cloudy', desc: '多云', temp: 22 },
+            { icon: 'fas fa-cloud-rain', class: 'rainy', desc: '小雨', temp: 18 },
+            { icon: 'fas fa-snowflake', class: 'snowy', desc: '小雪', temp: -2 }
+        ];
+        
+        const current = conditions[Math.floor(Math.random() * conditions.length)];
+        
+        return {
+            city: currentCity,
+            current: {
+                temperature: current.temp + Math.floor(Math.random() * 10 - 5),
+                condition: current.desc,
+                icon: current.icon,
+                iconClass: current.class,
+                humidity: 45 + Math.floor(Math.random() * 40),
+                windSpeed: Math.floor(Math.random() * 15) + 3,
+                pressure: 1010 + Math.floor(Math.random() * 40),
+                visibility: 8 + Math.floor(Math.random() * 12)
+            },
+            forecast: generateForecast()
+        };
+    }
+    
+    function generateForecast() {
+        const days = ['今天', '明天', '后天', '周四', '周五'];
+        const icons = ['fas fa-sun', 'fas fa-cloud-sun', 'fas fa-cloud-rain', 'fas fa-cloud'];
+        
+        return days.slice(0, 4).map((day, index) => ({
+            day: day,
+            icon: icons[Math.floor(Math.random() * icons.length)],
+            high: 20 + Math.floor(Math.random() * 15),
+            low: 10 + Math.floor(Math.random() * 10)
+        }));
+    }
+    
+    function displayWeatherData(data) {
+        const weatherDisplay = document.getElementById('weather-display');
+        
+        weatherDisplay.innerHTML = `
+            <div class="weather-info loaded">
+                <div class="weather-main">
+                    <div class="weather-icon ${data.current.iconClass}">
+                        <i class="${data.current.icon}"></i>
+                    </div>
+                    <div class="weather-temp">${data.current.temperature}°C</div>
+                </div>
+                <div class="weather-description">${data.current.condition}</div>
+                <div class="weather-details">
+                    <div class="weather-detail-item">
+                        <i class="fas fa-tint"></i>
+                        <span>湿度 ${data.current.humidity}%</span>
+                    </div>
+                    <div class="weather-detail-item">
+                        <i class="fas fa-wind"></i>
+                        <span>风速 ${data.current.windSpeed} km/h</span>
+                    </div>
+                    <div class="weather-detail-item">
+                        <i class="fas fa-thermometer-half"></i>
+                        <span>气压 ${data.current.pressure} hPa</span>
+                    </div>
+                    <div class="weather-detail-item">
+                        <i class="fas fa-eye"></i>
+                        <span>能见度 ${data.current.visibility} km</span>
+                    </div>
+                </div>
+                <div class="weather-forecast">
+                    <div class="forecast-title">未来几天</div>
+                    <div class="forecast-items">
+                        ${data.forecast.map(item => `
+                            <div class="forecast-item">
+                                <div class="forecast-day">${item.day}</div>
+                                <div class="forecast-icon">
+                                    <i class="${item.icon}"></i>
+                                </div>
+                                <div class="forecast-temp">${item.high}°/${item.low}°</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     // 用户收藏
     let userFavorites = [
         {name: "GitHub", url: "https://github.com", icon: "fab fa-github"},
@@ -2634,22 +3852,7 @@
 
     // 执行搜索
     function performSearch() {
-        const engineKey = document.getElementById('engine-select').value;
-        const engine = searchEngines.find(e => e.id === engineKey);
-        if (!engine) return;
-
-        const query = document.querySelector('.search-text').value.trim();
-
-        if (query) {
-            window.location.href = engine.url + encodeURIComponent(query);
-        } else {
-            // 添加抖动效果提示用户输入
-            const searchBox = document.querySelector('.search-box');
-            searchBox.style.animation = 'shake 0.5s';
-            setTimeout(() => {
-                searchBox.style.animation = '';
-            }, 500);
-        }
+        performSearchEnhanced();
     }
 
     // 切换内容区域
@@ -2673,14 +3876,15 @@
 
     // 应用设置
     function applySettings() {
-        // 应用主题
+        // 应用样式设置
         document.body.className = '';
-        document.body.classList.add(`theme-${userSettings.theme}`);
         document.body.classList.add(`layout-${userSettings.layout}`);
         document.body.classList.add(`font-${userSettings.fontSize}`);
         document.body.classList.add(`font-${userSettings.fontFamily}`);
         
-        if (userSettings.darkMode) {
+        // 主题由独立的主题切换系统管理
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
             document.body.classList.add('light-theme');
         }
 
@@ -2695,7 +3899,6 @@
     }
 
     function updateSettingsUI() {
-        document.getElementById('theme-select').value = userSettings.theme;
         document.getElementById('layout-select').value = userSettings.layout;
         document.getElementById('font-size-select').value = userSettings.fontSize;
         document.getElementById('font-family-select').value = userSettings.fontFamily;
@@ -2703,7 +3906,7 @@
         document.getElementById('hearts-setting').checked = userSettings.effects.hearts;
         document.getElementById('snow-setting').checked = userSettings.effects.snow;
         document.getElementById('ribbons-setting').checked = userSettings.effects.ribbons;
-        document.getElementById('theme-toggle').checked = userSettings.darkMode;
+        document.getElementById('auto-theme-setting').checked = userSettings.autoTheme;
     }
 
     function loadSettings() {
@@ -2732,6 +3935,13 @@
         renderEngineList();
         initClock();
         initNotes();
+        initSearchSuggestions();
+        initQuickAccess();
+        initDataManagement();
+        initWeather();
+        initThemeToggle();
+        initThemeKeyboard();
+        startAutoThemeTimer();
 
         // 设置菜单功能
         const settingsToggle = document.getElementById('settings-toggle');
@@ -2754,19 +3964,6 @@
                 !settingsToggle.contains(e.target)) {
                 settingsMenu.classList.remove('active');
             }
-        });
-
-        // 主题切换功能
-        const themeToggle = document.getElementById('theme-toggle');
-        themeToggle.addEventListener('change', function() {
-            userSettings.darkMode = this.checked;
-            saveSettings();
-        });
-
-        // 主题选择
-        document.getElementById('theme-select').addEventListener('change', function() {
-            userSettings.theme = this.value;
-            saveSettings();
         });
 
         // 布局选择
@@ -2812,6 +4009,20 @@
         const ribbonsSetting = document.getElementById('ribbons-setting');
         ribbonsSetting.addEventListener('change', function() {
             userSettings.effects.ribbons = this.checked;
+            saveSettings();
+        });
+
+        // 自动主题切换开关
+        const autoThemeSetting = document.getElementById('auto-theme-setting');
+        autoThemeSetting.addEventListener('change', function() {
+            userSettings.autoTheme = this.checked;
+            if (this.checked) {
+                // 启用自动主题切换，立即检查是否需要切换
+                autoThemeSwitch();
+                showNotification('已开启自动主题切换 🕐', 'success', 2000);
+            } else {
+                showNotification('已关闭自动主题切换', 'info', 2000);
+            }
             saveSettings();
         });
 
@@ -2990,7 +4201,98 @@
             }
         });
     });
+
+    // 数据管理功能
+    function initDataManagement() {
+        // 导出数据
+        document.getElementById('export-data-btn').addEventListener('click', function() {
+            const data = {
+                userSettings: userSettings,
+                userFavorites: userFavorites,
+                searchHistory: searchHistory,
+                notes: notes,
+                searchEngines: searchEngines,
+                exportDate: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `星辰导航_数据备份_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            showNotification('数据导出成功！', 'success');
+        });
+        
+        // 导入数据
+        document.getElementById('import-data-btn').addEventListener('click', function() {
+            document.getElementById('import-file-input').click();
+        });
+        
+        document.getElementById('import-file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        
+                        // 验证数据格式
+                        if (data.userSettings) {
+                            Object.assign(userSettings, data.userSettings);
+                            localStorage.setItem('userSettings', JSON.stringify(userSettings));
+                        }
+                        if (data.userFavorites) {
+                            userFavorites = data.userFavorites;
+                        }
+                        if (data.searchHistory) {
+                            searchHistory = data.searchHistory;
+                            localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+                        }
+                        if (data.notes) {
+                            notes = data.notes;
+                            localStorage.setItem('notes', JSON.stringify(notes));
+                        }
+                        if (data.searchEngines) {
+                            searchEngines = data.searchEngines;
+                        }
+                        
+                        // 重新渲染界面
+                        applySettings();
+                        renderFavorites();
+                        renderEngineList();
+                        renderNotes();
+                        updateEngineSelect();
+                        
+                        showNotification('数据导入成功！页面将刷新以应用设置。', 'success', 2000);
+                        
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                        
+                    } catch (error) {
+                        showNotification('数据格式错误，导入失败！', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+        
+        // 重置数据
+        document.getElementById('reset-data-btn').addEventListener('click', function() {
+            if (confirm('确定要重置所有数据吗？这将清除您的所有设置、收藏和记录！')) {
+                localStorage.clear();
+                showNotification('数据已重置！页面将刷新。', 'info', 2000);
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            }
+        });
+    }
 </script>
-<script async src="https://app2.weatherwidget.org/js/?id=ww_e6e82951c40cb"></script>
 </body>
 </html>
