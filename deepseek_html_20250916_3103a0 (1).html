@@ -1,0 +1,1776 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星辰导航 - 搜索引擎管理</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+    <style>
+        :root {
+            --primary: #8a2be2;
+            --secondary: #4169e1;
+            --accent: #ff6b6b;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --gradient: linear-gradient(135deg, #667eea, #764ba2, #8a2be2);
+            --gradient-reverse: linear-gradient(135deg, #8a2be2, #764ba2, #667eea);
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --transition: all 0.3s ease;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --font-size: 16px;
+            --border-radius: 20px;
+        }
+        /* 主题变量 */
+        .theme-purple {
+            --primary: #8a2be2;
+            --secondary: #4169e1;
+            --accent: #ff6b6b;
+            --gradient: linear-gradient(135deg, #667eea, #764ba2, #8a2be2);
+        }
+
+        .theme-green {
+            --primary: #2ecc71;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --gradient: linear-gradient(135deg, #1abc9c, #3498db, #2ecc71);
+        }
+
+        .theme-orange {
+            --primary: #e67e22;
+            --secondary: #d35400;
+            --accent: #9b59b6;
+            --gradient: linear-gradient(135deg, #e67e22, #d35400, #f39c12);
+        }
+
+        .theme-pink {
+            --primary: #e84393;
+            --secondary: #fd79a8;
+            --accent: #6c5ce7;
+            --gradient: linear-gradient(135deg, #fd79a8, #e84393, #6c5ce7);
+        }
+
+        /* 布局样式 */
+        .layout-grid .websites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+        }
+
+        .layout-list .websites-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .layout-list .website-card {
+            flex-direction: row;
+            align-items: center;
+            text-align: left;
+            padding: 15px 25px;
+        }
+
+        .layout-list .website-card img {
+            margin-bottom: 0;
+            margin-right: 15px;
+            width: 40px;
+            height: 40px;
+        }
+
+        .layout-list .website-card p {
+            flex-grow: 1;
+            margin-bottom: 0;
+        }
+
+        /* 字体选项 */
+        .font-small {
+            --font-size: 14px;
+        }
+
+        .font-medium {
+            --font-size: 16px;
+        }
+
+        .font-large {
+            --font-size: 18px;
+        }
+
+        .font-comic {
+            --font-family: "Comic Sans MS", cursive, sans-serif;
+        }
+
+        .font-serif {
+            --font-family: Georgia, serif;
+        }
+
+        .font-mono {
+            --font-family: "Courier New", monospace;
+        }
+
+        /* 应用字体和大小 */
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size);
+        }
+
+        /* 新特效样式 */
+        .snowflake {
+            position: fixed;
+            top: -50px;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.8;
+            animation: fall linear forwards;
+            color: #ffffff;
+        }
+
+        .ribbon {
+            position: fixed;
+            z-index: 9998;
+            pointer-events: none;
+            opacity: 0.5;
+            animation: float 10s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        /* 小部件样式 */
+        .widget {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .widget-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .widget-content {
+            color: var(--light);
+        }
+
+        /* 时钟样式 */
+        .clock {
+            font-family: 'Digital', monospace;
+            font-size: 2.5rem;
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .date {
+            text-align: center;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        /* 备忘录样式 */
+        .notes-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .note-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .note-text {
+            flex: 1;
+            word-break: break-word;
+        }
+
+        .note-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .note-btn {
+            background: none;
+            border: none;
+            color: var(--light);
+            cursor: pointer;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+
+        .note-btn:hover {
+            opacity: 1;
+        }
+
+        .add-note-form {
+            display: flex;
+            margin-top: 15px;
+        }
+
+        .note-input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px 0 0 8px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+        }
+
+        .add-note-btn {
+            padding: 10px 15px;
+            border-radius: 0 8px 8px 0;
+            border: none;
+            background: var(--gradient);
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .add-note-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* 高级设置样式 */
+        .advanced-settings {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .advanced-settings.expanded {
+            max-height: 1000px;
+        }
+
+        .toggle-advanced {
+            display: block;
+            width: 100%;
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 8px;
+            color: var(--light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .toggle-advanced:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* 数据管理样式 */
+        .data-management {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .data-btn {
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .data-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .data-btn.export {
+            background: rgba(46, 204, 113, 0.2);
+        }
+
+        .data-btn.import {
+            background: rgba(52, 152, 219, 0.2);
+        }
+
+        .data-btn.reset {
+            background: rgba(231, 76, 60, 0.2);
+        }
+
+        /* 快捷键设置样式 */
+        .shortcut-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .shortcut-key {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        /* 原有ZT.html的样式保持不变 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+        }
+
+        body {
+            background: var(--dark);
+            background-image:
+                    radial-gradient(circle at 10% 20%, rgba(100, 43, 115, 0.2) 0%, transparent 40%),
+                    radial-gradient(circle at 90% 80%, rgba(65, 105, 225, 0.2) 0%, transparent 40%);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            transition: background-color 0.5s ease;
+        }
+
+        body.light-theme {
+            --dark: #f0f2f5;
+            --light: #1a1a2e;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            background: #f0f2f5;
+            background-image:
+                    radial-gradient(circle at 10% 20%, rgba(102, 126, 234, 0.1) 0%, transparent 40%),
+                    radial-gradient(circle at 90% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 40%);
+            color: #1a1a2e;
+        }
+
+        /* 星空背景 */
+        .starry-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 5s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* 樱花特效 */
+        .sakura {
+            position: fixed;
+            top: -50px;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.8;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(105vh) rotate(360deg);
+            }
+        }
+
+        /* 爱心特效 */
+        .heart {
+            position: fixed;
+            top: -50px;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.8;
+            animation: fall-heart linear forwards;
+        }
+
+        @keyframes fall-heart {
+            to {
+                transform: translateY(105vh);
+            }
+        }
+
+        /* 导航栏 */
+        header {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.light-theme header {
+            background: rgba(240, 242, 245, 0.8);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(90deg, #ff6b6b, #4169e1, #8a2be2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: gradient 3s linear infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .logo img {
+            height: 40px;
+            filter: drop-shadow(0 0 5px rgba(138, 43, 226, 0.5));
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--light);
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 50px;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        body.light-theme nav a {
+            color: #1a1a2e;
+        }
+
+        nav a:hover {
+            background: rgba(138, 43, 226, 0.2);
+            transform: translateY(-3px);
+        }
+
+        nav a.active {
+            background: rgba(138, 43, 226, 0.3);
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+        }
+
+        nav a i {
+            font-size: 1.2rem;
+        }
+        /* 设置下拉菜单 */
+        .settings-dropdown {
+            position: relative;
+        }
+
+        .settings-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            width: 280px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1001;
+            display: none;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        body.light-theme .settings-menu {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .settings-menu.active {
+            display: block;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.light-theme .settings-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .settings-header h3 {
+            font-size: 1.2rem;
+            color: var(--light);
+        }
+
+        body.light-theme .settings-header h3 {
+            color: #1a1a2e;
+        }
+
+        .close-settings {
+            background: transparent;
+            border: none;
+            color: var(--light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        body.light-theme .close-settings {
+            color: #1a1a2e;
+        }
+
+        .close-settings:hover {
+            color: var(--accent);
+            transform: rotate(90deg);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        body.light-theme .setting-item {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .setting-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+
+        .setting-label i {
+            width: 20px;
+            text-align: center;
+            color: var(--accent);
+        }
+
+        /* 开关样式 */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: var(--gradient);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* 主内容区域 */
+        .container {
+            max-width: 1400px;
+            margin: 100px auto 50px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 修改搜索框部分使其居中 */
+        .search-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .search-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #ff6b6b, #4169e1, #8a2be2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 3s linear infinite;
+        }
+
+        /* 更新搜索框样式 */
+        .search-box {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 5px;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 700px;
+            width: 100%;
+        }
+
+        body.light-theme .search-box {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .search-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.3);
+            border-color: rgba(138, 43, 226, 0.3);
+        }
+
+        /* 搜索引擎选择器 */
+        .engine-selector {
+            position: relative;
+            min-width: 100px;
+            margin-right: 5px;
+        }
+
+        .engine-select {
+            width: 100%;
+            height: 60px;
+            border: none;
+            background: rgba(65, 105, 225, 0.3);
+            color: white;
+            border-radius: 30px;
+            padding: 0 15px 0 45px;
+            font-size: 14px;
+            appearance: none;
+            outline: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        body.light-theme .engine-select {
+            background: rgba(65, 105, 225, 0.1);
+            color: #1a1a2e;
+        }
+
+        .engine-select:hover {
+            background: rgba(65, 105, 225, 0.5);
+        }
+
+        .engine-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: white;
+            pointer-events: none;
+        }
+
+        body.light-theme .engine-icon {
+            color: #1a1a2e;
+        }
+
+        .search-text {
+            flex: 1;
+            border: none;
+            background: transparent;
+            outline: none;
+            padding: 15px 20px;
+            color: white;
+            font-size: 18px;
+        }
+
+        body.light-theme .search-text {
+            color: #1a1a2e;
+        }
+
+        .search-text::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        body.light-theme .search-text::placeholder {
+            color: rgba(0, 0, 0, 0.4);
+        }
+
+        .search-btn {
+            background: var(--gradient);
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-btn:hover {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        .search-btn i {
+            color: white;
+            font-size: 24px;
+        }
+
+        /* 当前引擎指示器 */
+        .engine-indicator {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        body.light-theme .engine-indicator {
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        .engine-indicator .indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4169e1;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.7; }
+        }
+
+        /* 网站网格 */
+        .websites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            width: 100%;
+            margin: 40px 0;
+        }
+
+        .website-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: var(--card-shadow);
+        }
+
+        .website-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(138, 43, 226, 0.3);
+            border-color: rgba(138, 43, 226, 0.3);
+        }
+
+        .website-card img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: 15px;
+            transition: var(--transition);
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+        }
+
+        .website-card:hover img {
+            transform: scale(1.2);
+        }
+
+        .website-card p {
+            color: var(--light);
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        body.light-theme .website-card p {
+            color: #1a1a2e;
+        }
+
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        body.light-theme footer {
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                margin-top: 120px;
+            }
+
+            header {
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            .logo {
+                margin-bottom: 15px;
+            }
+
+            nav ul {
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .search-box {
+                flex-direction: column;
+                border-radius: 20px;
+                padding: 10px;
+            }
+
+            .engine-selector {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+
+            .engine-select {
+                height: 50px;
+                border-radius: 15px;
+                width: 100%;
+            }
+
+            .search-text {
+                width: 100%;
+                padding: 15px;
+                border-radius: 15px;
+                margin-bottom: 10px;
+            }
+
+            .search-btn {
+                width: 100%;
+                height: 50px;
+                border-radius: 15px;
+            }
+
+            .websites-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+
+            .website-card {
+                padding: 15px;
+            }
+
+            .website-card img {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        /* 添加自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(26, 26, 46, 0.5);
+        }
+
+        body.light-theme ::-webkit-scrollbar-track {
+            background: rgba(240, 242, 245, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gradient-reverse);
+        }
+    </style>
+</head>
+<body>
+    <!-- 星空背景 -->
+    <div class="starry-bg" id="starry-bg"></div>
+    
+    <!-- 樱花特效容器 -->
+    <div id="sakura-container"></div>
+    
+    <!-- 爱心特效容器 -->
+    <div id="hearts-container"></div>
+    
+    <!-- 雪花特效容器 -->
+    <div id="snow-container"></div>
+    
+    <!-- 彩带特效容器 -->
+    <div id="ribbons-container"></div>
+
+    <!-- 导航栏 -->
+    <header>
+        <div class="logo">
+            <h1>星辰导航</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active"><i class="fas fa-home"></i> 首页</a></li>
+                <li><a href="#"><i class="fas fa-star"></i> 收藏</a></li>
+                <li><a href="#"><i class="fas fa-history"></i> 历史</a></li>
+                <li class="settings-dropdown">
+                    <a href="#" id="settings-btn"><i class="fas fa-cog"></i> 设置</a>
+                    <div class="settings-menu" id="settings-menu">
+                        <div class="settings-header">
+                            <h3>设置面板</h3>
+                            <button class="close-settings" id="close-settings">&times;</button>
+                        </div>
+                        <div class="settings-content">
+                            <!-- 主题设置 -->
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <i class="fas fa-paint-brush"></i>
+                                    <span>主题颜色</span>
+                                </div>
+                                <select id="theme-select">
+                                    <option value="purple">紫色主题</option>
+                                    <option value="green">绿色主题</option>
+                                    <option value="orange">橙色主题</option>
+                                    <option value="pink">粉色主题</option>
+                                </select>
+                            </div>
+                            
+                            <!-- 布局设置 -->
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <i class="fas fa-th-large"></i>
+                                    <span>布局样式</span>
+                                </div>
+                                <select id="layout-select">
+                                    <option value="grid">网格布局</option>
+                                    <option value="list">列表布局</option>
+                                </select>
+                            </div>
+                            
+                            <!-- 字体设置 -->
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <i class="fas fa-font"></i>
+                                    <span>字体大小</span>
+                                </div>
+                                <select id="font-size-select">
+                                    <option value="small">小</option>
+                                    <option value="medium">中</option>
+                                    <option value="large">大</option>
+                                </select>
+                            </div>
+                            
+                            <!-- 字体样式 -->
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <i class="fas fa-text-height"></i>
+                                    <span>字体样式</span>
+                                </div>
+                                <select id="font-family-select">
+                                    <option value="default">默认</option>
+                                    <option value="comic">Comic Sans</option>
+                                    <option value="serif">Serif</option>
+                                    <option value="mono">等宽</option>
+                                </select>
+                            </div>
+                            
+                            <!-- 特效设置 -->
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <i class="fas fa-magic"></i>
+                                    <span>樱花特效</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="sakura-setting">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <i class="fas fa-heart"></i>
+                                    <span>爱心特效</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="hearts-setting">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <i class="fas fa-snowflake"></i>
+                                    <span>雪花特效</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="snow-setting">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <i class="fas fa-ribbon"></i>
+                                    <span>彩带特效</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="ribbons-setting">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <i class="fas fa-moon"></i>
+                                    <span>深色模式</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="dark-mode-setting">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <!-- 搜索框 -->
+        <div class="search-section">
+            <h1 class="search-title">星辰导航</h1>
+            <div class="search-box">
+                <div class="engine-selector">
+                    <div class="engine-icon"><i class="fab fa-google"></i></div>
+                    <select class="engine-select" id="engine-select">
+                        <option value="google">Google</option>
+                        <option value="bing">Bing</option>
+                        <option value="baidu">百度</option>
+                        <option value="duckduckgo">DuckDuckGo</option>
+                    </select>
+                </div>
+                <input type="text" class="search-text" id="search-input" placeholder="输入关键词搜索...">
+                <button class="search-btn" id="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div class="engine-indicator">
+                <span class="indicator"></span>
+                <span id="current-engine">当前搜索引擎: Google</span>
+            </div>
+        </div>
+
+        <!-- 网站网格 -->
+        <div class="websites-grid" id="websites-grid">
+            <!-- 常用网站卡片将通过JS动态生成 -->
+        </div>
+
+        <!-- 小部件区域 -->
+        <div class="widgets-container" style="width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+            <!-- 时钟小部件 -->
+            <div class="widget">
+                <div class="widget-header">
+                    <h3 class="widget-title"><i class="fas fa-clock"></i> 时钟</h3>
+                </div>
+                <div class="widget-content">
+                    <div class="clock" id="clock">00:00:00</div>
+                    <div class="date" id="date">2023年1月1日 星期一</div>
+                </div>
+            </div>
+
+            <!-- 备忘录小部件 -->
+            <div class="widget">
+                <div class="widget-header">
+                    <h3 class="widget-title"><i class="fas fa-sticky-note"></i> 备忘录</h3>
+                </div>
+                <div class="widget-content">
+                    <div class="notes-list" id="notes-list">
+                        <!-- 备忘录内容将通过JS动态生成 -->
+                    </div>
+                    <div class="add-note-form">
+                        <input type="text" class="note-input" id="note-input" placeholder="添加新备忘录...">
+                        <button class="add-note-btn" id="add-note-btn"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 搜索引擎管理小部件 -->
+            <div class="widget">
+                <div class="widget-header">
+                    <h3 class="widget-title"><i class="fas fa-search"></i> 搜索引擎管理</h3>
+                </div>
+                <div class="widget-content">
+                    <div id="engine-list">
+                        <!-- 搜索引擎列表将通过JS动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2023 星辰导航 - 您的个性化导航页 | 设计制作: 星辰团队</p>
+    </footer>
+
+    <script>
+        // 用户设置
+        const userSettings = {
+            theme: 'purple',
+            layout: 'grid',
+            fontSize: 'medium',
+            fontFamily: 'default',
+            effects: {
+                sakura: true,
+                hearts: false,
+                snow: false,
+                ribbons: false
+            },
+            darkMode: false
+        };
+
+        // 搜索引擎数据
+        const searchEngines = {
+            google: {
+                name: 'Google',
+                url: 'https://www.google.com/search?q=',
+                icon: 'fab fa-google'
+            },
+            bing: {
+                name: 'Bing',
+                url: 'https://www.bing.com/search?q=',
+                icon: 'fab fa-microsoft'
+            },
+            baidu: {
+                name: '百度',
+                url: 'https://www.baidu.com/s?wd=',
+                icon: 'fab fa-baidu'
+            },
+            duckduckgo: {
+                name: 'DuckDuckGo',
+                url: 'https://duckduckgo.com/?q=',
+                icon: 'fas fa-duck'
+            }
+        };
+
+        // 常用网站数据
+        const favoriteWebsites = [
+            { name: 'GitHub', url: 'https://github.com', icon: 'https://github.githubassets.com/favicons/favicon.png' },
+            { name: 'YouTube', url: 'https://youtube.com', icon: 'https://www.youtube.com/favicon.ico' },
+            { name: '知乎', url: 'https://www.zhihu.com', icon: 'https://static.zhihu.com/heifetz/favicon.ico' },
+            { name: 'B站', url: 'https://www.bilibili.com', icon: 'https://www.bilibili.com/favicon.ico' },
+            { name: '微博', url: 'https://weibo.com', icon: 'https://weibo.com/favicon.ico' },
+            { name: '豆瓣', url: 'https://www.douban.com', icon: 'https://www.douban.com/favicon.ico' },
+            { name: '淘宝', url: 'https://www.taobao.com', icon: 'https://www.taobao.com/favicon.ico' },
+            { name: '京东', url: 'https://www.jd.com', icon: 'https://www.jd.com/favicon.ico' }
+        ];
+
+        // 备忘录数据
+        let notes = [];
+
+        // 初始化函数
+        function initAll() {
+            loadSettings();
+            createStarryBackground();
+            createSakuraEffect();
+            createHeartsEffect();
+            createSnowEffect();
+            createRibbonsEffect();
+            renderFavorites();
+            renderEngineList();
+            initBackground();
+            initClock();
+            initNotes();
+            applyLayout();
+            applyFontSettings();
+            initShortcuts();
+            initWidgets();
+        }
+
+        // 创建星空背景
+        function createStarryBackground() {
+            const container = document.getElementById('starry-bg');
+            container.innerHTML = '';
+            const starCount = 150;
+
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+
+                // 随机大小
+                const size = Math.random() * 3;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+
+                // 随机位置
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+
+                // 随机动画参数
+                const duration = Math.random() * 5 + 3;
+                const delay = Math.random() * 5;
+                star.style.animation = `twinkle ${duration}s infinite ${delay}s ease-in-out`;
+
+                // 设置背景颜色为白色
+                star.style.backgroundColor = 'white';
+
+                // 将星星添加到容器
+                container.appendChild(star);
+            }
+        }
+
+        // 创建樱花特效
+        function createSakuraEffect() {
+            const sakuraContainer = document.getElementById('sakura-container');
+            sakuraContainer.innerHTML = '';
+
+            if (!userSettings.effects.sakura) return;
+
+            const sakuraCount = 15;
+
+            for (let i = 0; i < sakuraCount; i++) {
+                const sakura = document.createElement('div');
+                sakura.classList.add('sakura');
+                sakura.innerHTML = '🌸';
+                sakura.style.left = `${Math.random() * 100}%`;
+                sakura.style.fontSize = `${Math.random() * 15 + 15}px`;
+                sakura.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                sakura.style.animationDelay = `${Math.random() * 5}s`;
+                sakuraContainer.appendChild(sakura);
+            }
+        }
+
+        // 创建爱心特效
+        function createHeartsEffect() {
+            const heartsContainer = document.getElementById('hearts-container');
+            heartsContainer.innerHTML = '';
+
+            if (!userSettings.effects.hearts) return;
+
+            const heartsCount = 10;
+
+            for (let i = 0; i < heartsCount; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '❤️';
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.fontSize = `${Math.random() * 10 + 10}px`;
+                heart.style.animationDuration = `${Math.random() * 10 + 15}s`;
+                heart.style.animationDelay = `${Math.random() * 5}s`;
+                heartsContainer.appendChild(heart);
+            }
+        }
+
+        // 创建雪花特效
+        function createSnowEffect() {
+            const snowContainer = document.getElementById('snow-container');
+            snowContainer.innerHTML = '';
+
+            if (!userSettings.effects.snow) return;
+
+            const snowCount = 30;
+
+            for (let i = 0; i < snowCount; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.innerHTML = '❄️';
+                snowflake.style.left = `${Math.random() * 100}%`;
+                snowflake.style.fontSize = `${Math.random() * 10 + 10}px`;
+                snowflake.style.animationDuration = `${Math.random() * 10 + 15}s`;
+                snowflake.style.animationDelay = `${Math.random() * 5}s`;
+                snowContainer.appendChild(snowflake);
+            }
+        }
+
+        // 创建彩带特效
+        function createRibbonsEffect() {
+            const ribbonsContainer = document.getElementById('ribbons-container');
+            ribbonsContainer.innerHTML = '';
+
+            if (!userSettings.effects.ribbons) return;
+
+            const ribbonsCount = 5;
+            const colors = ['#ff6b6b', '#4169e1', '#8a2be2', '#2ecc71', '#e67e22'];
+
+            for (let i = 0; i < ribbonsCount; i++) {
+                const ribbon = document.createElement('div');
+                ribbon.classList.add('ribbon');
+                ribbon.innerHTML = '🎀';
+                ribbon.style.left = `${Math.random() * 100}%`;
+                ribbon.style.top = `${Math.random() * 100}%`;
+                ribbon.style.fontSize = `${Math.random() * 20 + 20}px`;
+                ribbon.style.color = colors[i % colors.length];
+                ribbon.style.animationDelay = `${Math.random() * 5}s`;
+                ribbonsContainer.appendChild(ribbon);
+            }
+        }
+
+        // 渲染常用网站
+        function renderFavorites() {
+            const grid = document.getElementById('websites-grid');
+            grid.innerHTML = '';
+
+            favoriteWebsites.forEach(site => {
+                const card = document.createElement('div');
+                card.classList.add('website-card');
+                card.innerHTML = `
+                    <img src="${site.icon}" alt="${site.name}" onerror="this.src='https://via.placeholder.com/60'">
+                    <p>${site.name}</p>
+                `;
+                card.addEventListener('click', () => {
+                    window.open(site.url, '_blank');
+                });
+                grid.appendChild(card);
+            });
+        }
+
+        // 渲染搜索引擎列表
+        function renderEngineList() {
+            const engineList = document.getElementById('engine-list');
+            engineList.innerHTML = '';
+
+            for (const [key, engine] of Object.entries(searchEngines)) {
+                const engineItem = document.createElement('div');
+                engineItem.classList.add('engine-item');
+                engineItem.innerHTML = `
+                    <i class="${engine.icon}"></i>
+                    <span>${engine.name}</span>
+                    <button class="engine-set-default" data-engine="${key}">设为默认</button>
+                `;
+                engineList.appendChild(engineItem);
+            }
+
+            // 添加事件监听器
+            document.querySelectorAll('.engine-set-default').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const engineKey = this.getAttribute('data-engine');
+                    setDefaultEngine(engineKey);
+                });
+            });
+        }
+
+        // 设置默认搜索引擎
+        function setDefaultEngine(engineKey) {
+            if (searchEngines[engineKey]) {
+                document.getElementById('engine-select').value = engineKey;
+                updateEngineIndicator();
+                saveSettings();
+            }
+        }
+
+        // 更新搜索引擎指示器
+        function updateEngineIndicator() {
+            const engineSelect = document.getElementById('engine-select');
+            const currentEngine = document.getElementById('current-engine');
+            const selectedEngine = engineSelect.value;
+            
+            currentEngine.textContent = `当前搜索引擎: ${searchEngines[selectedEngine].name}`;
+        }
+
+        // 初始化时钟
+        function initClock() {
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        // 更新时钟
+        function updateClock() {
+            const now = new Date();
+            const clock = document.getElementById('clock');
+            const date = document.getElementById('date');
+            
+            // 更新时间
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            clock.textContent = `${hours}:${minutes}:${seconds}`;
+            
+            // 更新日期
+            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            date.textContent = now.toLocaleDateString('zh-CN', options);
+        }
+
+        // 初始化备忘录
+        function initNotes() {
+            loadNotes();
+            renderNotes();
+            
+            // 添加备忘录事件监听
+            document.getElementById('add-note-btn').addEventListener('click', addNote);
+            document.getElementById('note-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addNote();
+                }
+            });
+        }
+
+        // 加载备忘录
+        function loadNotes() {
+            const savedNotes = localStorage.getItem('notes');
+            if (savedNotes) {
+                notes = JSON.parse(savedNotes);
+            }
+        }
+
+        // 保存备忘录
+        function saveNotes() {
+            localStorage.setItem('notes', JSON.stringify(notes));
+        }
+
+        // 渲染备忘录
+        function renderNotes() {
+            const notesList = document.getElementById('notes-list');
+            notesList.innerHTML = '';
+            
+            if (notes.length === 0) {
+                notesList.innerHTML = '<p style="text-align: center; opacity: 0.7;">暂无备忘录</p>';
+                return;
+            }
+            
+            notes.forEach((note, index) => {
+                const noteItem = document.createElement('div');
+                noteItem.classList.add('note-item');
+                noteItem.innerHTML = `
+                    <div class="note-text">${note}</div>
+                    <div class="note-actions">
+                        <button class="note-btn edit-note" data-index="${index}"><i class="fas fa-edit"></i></button>
+                        <button class="note-btn delete-note" data-index="${index}"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                notesList.appendChild(noteItem);
+            });
+            
+            // 添加删除和编辑事件
+            document.querySelectorAll('.delete-note').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = this.getAttribute('data-index');
+                    deleteNote(index);
+                });
+            });
+            
+            document.querySelectorAll('.edit-note').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = this.getAttribute('data-index');
+                    editNote(index);
+                });
+            });
+        }
+
+        // 添加备忘录
+        function addNote() {
+            const noteInput = document.getElementById('note-input');
+            const text = noteInput.value.trim();
+            
+            if (text) {
+                notes.push(text);
+                saveNotes();
+                renderNotes();
+                noteInput.value = '';
+            }
+        }
+
+        // 删除备忘录
+        function deleteNote(index) {
+            notes.splice(index, 1);
+            saveNotes();
+            renderNotes();
+        }
+
+        // 编辑备忘录
+        function editNote(index) {
+            const newText = prompt('编辑备忘录:', notes[index]);
+            if (newText !== null) {
+                notes[index] = newText.trim();
+                saveNotes();
+                renderNotes();
+            }
+        }
+
+        // 初始化小部件
+        function initWidgets() {
+            // 这里可以添加小部件的初始化代码
+        }
+
+        // 初始化快捷键
+        function initShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                // 聚焦搜索框快捷键 (Ctrl+K 或 /)
+                if ((e.ctrlKey && e.key === 'k') || e.key === '/') {
+                    e.preventDefault();
+                    document.getElementById('search-input').focus();
+                }
+                
+                // 打开设置快捷键 (Ctrl+,)
+                if (e.ctrlKey && e.key === ',') {
+                    e.preventDefault();
+                    document.getElementById('settings-menu').classList.toggle('active');
+                }
+            });
+        }
+
+        // 初始化背景
+        function initBackground() {
+            // 这里可以添加背景初始化的代码
+        }
+
+        // 加载设置
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('userSettings');
+            if (savedSettings) {
+                const parsedSettings = JSON.parse(savedSettings);
+                Object.assign(userSettings, parsedSettings);
+            }
+            applySettings();
+        }
+
+        // 保存设置
+        function saveSettings() {
+            localStorage.setItem('userSettings', JSON.stringify(userSettings));
+            applySettings();
+        }
+
+        // 应用设置
+        function applySettings() {
+            // 应用主题
+            document.body.className = '';
+            document.body.classList.add(`theme-${userSettings.theme}`);
+            if (userSettings.darkMode) {
+                document.body.classList.add('light-theme');
+            }
+            
+            // 应用布局
+            applyLayout();
+            
+            // 应用字体设置
+            applyFontSettings();
+            
+            // 应用特效
+            createSakuraEffect();
+            createHeartsEffect();
+            createSnowEffect();
+            createRibbonsEffect();
+            
+            // 更新UI控件状态
+            updateSettingsUI();
+        }
+
+        // 应用布局
+        function applyLayout() {
+            const websitesGrid = document.getElementById('websites-grid');
+            websitesGrid.className = 'websites-grid';
+            websitesGrid.classList.add(`layout-${userSettings.layout}`);
+        }
+
+        // 应用字体设置
+        function applyFontSettings() {
+            document.body.classList.remove('font-small', 'font-medium', 'font-large');
+            document.body.classList.add(`font-${userSettings.fontSize}`);
+            
+            document.body.classList.remove('font-default', 'font-comic', 'font-serif', 'font-mono');
+            document.body.classList.add(`font-${userSettings.fontFamily}`);
+        }
+
+        // 更新设置UI
+        function updateSettingsUI() {
+            document.getElementById('theme-select').value = userSettings.theme;
+            document.getElementById('layout-select').value = userSettings.layout;
+            document.getElementById('font-size-select').value = userSettings.fontSize;
+            document.getElementById('font-family-select').value = userSettings.fontFamily;
+            document.getElementById('sakura-setting').checked = userSettings.effects.sakura;
+            document.getElementById('hearts-setting').checked = userSettings.effects.hearts;
+            document.getElementById('snow-setting').checked = userSettings.effects.snow;
+            document.getElementById('ribbons-setting').checked = userSettings.effects.ribbons;
+            document.getElementById('dark-mode-setting').checked = userSettings.darkMode;
+        }
+
+        // 初始化事件监听
+        function initEventListeners() {
+            // 搜索功能
+            document.getElementById('search-btn').addEventListener('click', performSearch);
+            document.getElementById('search-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            
+            // 搜索引擎选择
+            document.getElementById('engine-select').addEventListener('change', function() {
+                updateEngineIndicator();
+                saveSettings();
+            });
+            
+            // 设置面板
+            document.getElementById('settings-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('settings-menu').classList.toggle('active');
+            });
+            
+            document.getElementById('close-settings').addEventListener('click', function() {
+                document.getElementById('settings-menu').classList.remove('active');
+            });
+            
+            // 设置变更
+            document.getElementById('theme-select').addEventListener('change', function() {
+                userSettings.theme = this.value;
+                saveSettings();
+            });
+            
+            document.getElementById('layout-select').addEventListener('change', function() {
+                userSettings.layout = this.value;
+                saveSettings();
+            });
+            
+            document.getElementById('font-size-select').addEventListener('change', function() {
+                userSettings.fontSize = this.value;
+                saveSettings();
+            });
+            
+            document.getElementById('font-family-select').addEventListener('change', function() {
+                userSettings.fontFamily = this.value;
+                saveSettings();
+            });
+            
+            document.getElementById('sakura-setting').addEventListener('change', function() {
+                userSettings.effects.sakura = this.checked;
+                saveSettings();
+            });
+            
+            document.getElementById('hearts-setting').addEventListener('change', function() {
+                userSettings.effects.hearts = this.checked;
+                saveSettings();
+            });
+            
+            document.getElementById('snow-setting').addEventListener('change', function() {
+                userSettings.effects.snow = this.checked;
+                saveSettings();
+            });
+            
+            document.getElementById('ribbons-setting').addEventListener('change', function() {
+                userSettings.effects.ribbons = this.checked;
+                saveSettings();
+            });
+            
+            document.getElementById('dark-mode-setting').addEventListener('change', function() {
+                userSettings.darkMode = this.checked;
+                saveSettings();
+            });
+        }
+
+        // 执行搜索
+        function performSearch() {
+            const query = document.getElementById('search-input').value.trim();
+            const engine = document.getElementById('engine-select').value;
+            
+            if (query) {
+                const searchUrl = searchEngines[engine].url + encodeURIComponent(query);
+                window.open(searchUrl, '_blank');
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initAll();
+            initEventListeners();
+        });
+    </script>
+</body>
+</html>
