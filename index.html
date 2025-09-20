@@ -33,12 +33,215 @@
     <div class="quick-access-btn" title="返回顶部" id="scroll-to-top">
         <i class="fas fa-arrow-up"></i>
     </div>
+    <div class="quick-access-btn" title="设置" id="settings-toggle">
+        <i class="fas fa-cog"></i>
+    </div>
     <div class="quick-access-btn" title="随机网站" id="random-site">
         <i class="fas fa-random"></i>
     </div>
     <div class="quick-access-btn" title="全屏模式" id="fullscreen-toggle">
         <i class="fas fa-expand"></i>
     </div>
+</div>
+
+<!-- 设置菜单 -->
+<div class="settings-menu" id="settings-menu" style="position: fixed; top: 50%; right: 80px; transform: translateY(-50%); z-index: 1600;">
+    <div class="settings-header">
+        <h3>设置中心</h3>
+        <button class="close-settings" id="close-settings">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- 布局设置 -->
+    <div class="setting-item">
+        <div class="setting-label">
+            <i class="fas fa-th-large"></i>
+            <span>布局样式</span>
+        </div>
+        <select class="setting-select" id="layout-select">
+            <option value="grid">网格布局</option>
+            <option value="list">列表布局</option>
+        </select>
+    </div>
+    
+    <!-- 字体设置 -->
+    <div class="setting-item">
+        <div class="setting-label">
+            <i class="fas fa-font"></i>
+            <span>字体大小</span>
+        </div>
+        <select class="setting-select" id="font-size-select">
+            <option value="small">小</option>
+            <option value="medium">中</option>
+            <option value="large">大</option>
+        </select>
+    </div>
+    
+    <!-- 字体样式 -->
+    <div class="setting-item">
+        <div class="setting-label">
+            <i class="fas fa-text-height"></i>
+            <span>字体样式</span>
+        </div>
+        <select class="setting-select" id="font-family-select">
+            <option value="default">默认</option>
+            <option value="comic">Comic Sans</option>
+            <option value="serif">Serif</option>
+            <option value="mono">等宽</option>
+        </select>
+    </div>
+
+    <div class="setting-item">
+        <div class="setting-label">
+            <i class="fas fa-globe"></i>
+            <span>智能搜索引擎</span>
+        </div>
+        <button class="add-favorite-btn" id="refresh-network-btn" style="padding: 5px 10px; font-size: 0.8rem;">
+            检测网络
+        </button>
+    </div>
+
+    <div class="setting-item">
+        <div class="setting-label">
+            <i class="fas fa-tree"></i>
+            <span>樱花特效</span>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="sakura-setting" checked>
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="setting-item">
+        <div class="setting-label">
+            <i class="fas fa-heart"></i>
+            <span>爱心特效</span>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="hearts-setting">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="setting-item">
+        <div class="setting-label">
+            <i class="fas fa-snowflake"></i>
+            <span>雪花特效</span>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="snow-setting">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="setting-item">
+        <div class="setting-label">
+            <i class="fas fa-ribbon"></i>
+            <span>彩带特效</span>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="ribbons-setting">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="setting-item">
+        <div class="setting-label">
+            <i class="fas fa-star"></i>
+            <span>显示收藏栏</span>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="bookmarks-setting" checked>
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="setting-item">
+        <div class="setting-label">
+            <i class="fas fa-sync-alt"></i>
+            <span>自动更新内容</span>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="autoupdate-setting" checked>
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="setting-item">
+        <div class="setting-label">
+            <i class="fas fa-shield-alt"></i>
+            <span>安全搜索</span>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="safesearch-setting">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="setting-item">
+        <div class="setting-label">
+            <i class="fas fa-keyboard"></i>
+            <span>快捷键说明</span>
+        </div>
+        <div style="font-size: 0.8rem; opacity: 0.8; line-height: 1.4;">
+            <div>搜索: Ctrl+K 或 /</div>
+            <div>设置: Ctrl+,</div>
+            <div>主题切换: Ctrl+Shift+T</div>
+        </div>
+    </div>
+
+    <div class="setting-item">
+        <div class="setting-label">
+            <i class="fas fa-clock"></i>
+            <span>自动主题切换</span>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="auto-theme-setting">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="setting-item" style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 15px; margin-top: 15px;">
+        <div class="setting-label">
+            <i class="fas fa-history"></i>
+            <span>访问历史管理</span>
+        </div>
+    </div>
+    
+    <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button class="add-favorite-btn" id="view-history-btn" style="flex: 1; font-size: 0.8rem; padding: 8px;">
+            <i class="fas fa-eye"></i>查看
+        </button>
+        <button class="add-favorite-btn" id="clear-history-btn" style="flex: 1; font-size: 0.8rem; padding: 8px; background: linear-gradient(135deg, #ff9800, #f57c00);">
+            <i class="fas fa-trash-alt"></i>清空
+        </button>
+    </div>
+
+    <button class="add-favorite-btn" id="save-settings-btn" style="width: 100%; justify-content: center; margin-top: 15px;">
+        <i class="fas fa-save"></i>保存设置
+    </button>
+
+    <!-- 数据管理 -->
+    <div class="setting-item" style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 15px; margin-top: 15px;">
+        <div class="setting-label">
+            <i class="fas fa-database"></i>
+            <span>数据管理</span>
+        </div>
+    </div>
+    
+    <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button class="add-favorite-btn" id="export-data-btn" style="flex: 1; font-size: 0.8rem; padding: 8px;">
+            <i class="fas fa-download"></i>导出
+        </button>
+        <button class="add-favorite-btn" id="import-data-btn" style="flex: 1; font-size: 0.8rem; padding: 8px;">
+            <i class="fas fa-upload"></i>导入
+        </button>
+        <button class="add-favorite-btn" id="reset-data-btn" style="flex: 1; font-size: 0.8rem; padding: 8px; background: linear-gradient(135deg, #f44336, #d32f2f);">
+            <i class="fas fa-trash"></i>重置
+        </button>
+    </div>
+    <input type="file" id="import-file-input" accept=".json" style="display: none;">
 </div>
 
 <!-- 通知容器 -->
@@ -54,6 +257,41 @@
 
 <!-- 主题过渡遮罩 -->
 <div class="theme-transition-overlay" id="theme-transition-overlay"></div>
+
+<!-- 卡片编辑模态框 -->
+<div class="card-edit-modal" id="card-edit-modal">
+    <div class="card-edit-modal-content">
+        <div class="card-edit-modal-header">
+            <h2 class="card-edit-modal-title">编辑网站卡片</h2>
+            <button class="close-card-edit-modal" id="close-card-edit-modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="card-edit-form">
+            <div class="card-edit-form-group">
+                <label for="card-name">网站名称</label>
+                <input type="text" id="card-name" placeholder="例如：腾讯视频">
+            </div>
+            <div class="card-edit-form-group">
+                <label for="card-description">网站描述</label>
+                <input type="text" id="card-description" placeholder="例如：海量高清影视资源在线观看">
+            </div>
+            <div class="card-edit-form-group">
+                <label for="card-url">网站链接</label>
+                <input type="text" id="card-url" placeholder="例如：https://v.qq.com">
+            </div>
+            <div class="card-edit-form-group">
+                <label for="card-icon">图标链接</label>
+                <input type="text" id="card-icon" placeholder="例如：https://v.qq.com/favicon.ico">
+            </div>
+            <div class="card-edit-form-buttons">
+                <button class="card-edit-form-btn card-edit-form-cancel" id="cancel-card-edit-form">取消</button>
+                <button class="card-edit-form-btn card-edit-form-submit" id="save-card-edit">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- 搜索引擎管理模态框 -->
 <div class="engine-modal" id="engine-modal">
@@ -90,228 +328,15 @@
     </div>
 </div>
 
-<header>
-    <div class="logo">
-        <img src="https://cdn-icons-png.flaticon.com/512/1672/1672491.png" alt="Logo">
-        <h1>星辰导航</h1>
-    </div>
-    <nav>
-        <ul>
-            <li><a href="#" class="nav-link active" data-target="home"><i class="fas fa-home"></i>首页</a></li>
-            <li><a href="#" class="nav-link" data-target="discover"><i class="fas fa-compass"></i>发现</a></li>
-            <li><a href="#" class="nav-link" data-target="favorites"><i class="fas fa-star"></i>收藏</a></li>
-            <li class="settings-dropdown">
-                <a href="#" id="settings-toggle"><i class="fas fa-cog"></i>设置</a>
-                <div class="settings-menu" id="settings-menu">
-                    <div class="settings-header">
-                        <h3>设置中心</h3>
-                        <button class="close-settings" id="close-settings">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
 
-                    <!-- 布局设置 -->
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <i class="fas fa-th-large"></i>
-                            <span>布局样式</span>
-                        </div>
-                        <select class="setting-select" id="layout-select">
-                            <option value="grid">网格布局</option>
-                            <option value="list">列表布局</option>
-                        </select>
-                    </div>
-                    
-                    <!-- 字体设置 -->
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <i class="fas fa-font"></i>
-                            <span>字体大小</span>
-                        </div>
-                        <select class="setting-select" id="font-size-select">
-                            <option value="small">小</option>
-                            <option value="medium">中</option>
-                            <option value="large">大</option>
-                        </select>
-                    </div>
-                    
-                    <!-- 字体样式 -->
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <i class="fas fa-text-height"></i>
-                            <span>字体样式</span>
-                        </div>
-                        <select class="setting-select" id="font-family-select">
-                            <option value="default">默认</option>
-                            <option value="comic">Comic Sans</option>
-                            <option value="serif">Serif</option>
-                            <option value="mono">等宽</option>
-                        </select>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <i class="fas fa-search"></i>
-                            <span>搜索引擎管理</span>
-                        </div>
-                        <button class="add-favorite-btn" id="manage-engines-btn" style="padding: 5px 10px; font-size: 0.8rem;">
-                            管理
-                        </button>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <i class="fas fa-tree"></i>
-                            <span>樱花特效</span>
-                        </div>
-                        <label class="switch">
-                            <input type="checkbox" id="sakura-setting" checked>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <i class="fas fa-heart"></i>
-                            <span>爱心特效</span>
-                        </div>
-                        <label class="switch">
-                            <input type="checkbox" id="hearts-setting">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <i class="fas fa-snowflake"></i>
-                            <span>雪花特效</span>
-                        </div>
-                        <label class="switch">
-                            <input type="checkbox" id="snow-setting">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <i class="fas fa-ribbon"></i>
-                            <span>彩带特效</span>
-                        </div>
-                        <label class="switch">
-                            <input type="checkbox" id="ribbons-setting">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <i class="fas fa-star"></i>
-                            <span>显示收藏栏</span>
-                        </div>
-                        <label class="switch">
-                            <input type="checkbox" id="bookmarks-setting" checked>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <i class="fas fa-sync-alt"></i>
-                            <span>自动更新内容</span>
-                        </div>
-                        <label class="switch">
-                            <input type="checkbox" id="autoupdate-setting" checked>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>安全搜索</span>
-                        </div>
-                        <label class="switch">
-                            <input type="checkbox" id="safesearch-setting">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <i class="fas fa-keyboard"></i>
-                            <span>快捷键说明</span>
-                        </div>
-                        <div style="font-size: 0.8rem; opacity: 0.8; line-height: 1.4;">
-                            <div>搜索: Ctrl+K 或 /</div>
-                            <div>设置: Ctrl+,</div>
-                            <div>主题切换: Ctrl+Shift+T</div>
-                        </div>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <i class="fas fa-clock"></i>
-                            <span>自动主题切换</span>
-                        </div>
-                        <label class="switch">
-                            <input type="checkbox" id="auto-theme-setting">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-
-                    <button class="add-favorite-btn" id="save-settings-btn" style="width: 100%; justify-content: center; margin-top: 15px;">
-                        <i class="fas fa-save"></i>保存设置
-                    </button>
-
-                    <!-- 数据管理 -->
-                    <div class="setting-item" style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 15px; margin-top: 15px;">
-                        <div class="setting-label">
-                            <i class="fas fa-database"></i>
-                            <span>数据管理</span>
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; gap: 10px; margin-top: 10px;">
-                        <button class="add-favorite-btn" id="export-data-btn" style="flex: 1; font-size: 0.8rem; padding: 8px;">
-                            <i class="fas fa-download"></i>导出
-                        </button>
-                        <button class="add-favorite-btn" id="import-data-btn" style="flex: 1; font-size: 0.8rem; padding: 8px;">
-                            <i class="fas fa-upload"></i>导入
-                        </button>
-                        <button class="add-favorite-btn" id="reset-data-btn" style="flex: 1; font-size: 0.8rem; padding: 8px; background: linear-gradient(135deg, #f44336, #d32f2f);">
-                            <i class="fas fa-trash"></i>重置
-                        </button>
-                    </div>
-                    <input type="file" id="import-file-input" accept=".json" style="display: none;">
-                </div>
-            </li>
-        </ul>
-    </nav>
-</header>
-
-<div class="container">
+<div class="container" style="margin-top: 50px;">
     <!-- 首页内容 -->
     <div id="home" class="content-section active">
         <div class="search-section">
-            <h2 class="search-title">探索无限可能</h2>
             <div class="search-container">
                 <div class="search-box">
-                    <!-- 搜索引擎选择器 -->
-                    <div class="engine-selector">
-                        <select class="engine-select" id="engine-select">
-                            <option value="baidu">百度</option>
-                            <option value="google">谷歌</option>
-                            <option value="bing">必应</option>
-                            <option value="sogou">搜狗</option>
-                            <option value="360">360搜索</option>
-                        </select>
-                        <div class="engine-icon" id="engine-icon-display">
-                            <i class="fab fa-baidu"></i>
-                        </div>
-                    </div>
-
-                    <input type="text" class="search-text" name="inputs" placeholder="在这里输入你想要搜的... (快捷键: Ctrl+K 或 /)" id="search-input">
-                    <a class="search-btn" onclick="performSearch()">
+                    <input type="text" class="search-text" name="inputs" placeholder="" id="search-input">
+                    <a class="search-btn" id="search-btn">
                         <i class="fas fa-search"></i>
                     </a>
                 </div>
@@ -321,82 +346,10 @@
                     <!-- 搜索建议将通过JS动态生成 -->
                 </div>
             </div>
-            <div class="engine-indicator">
-                <span class="indicator"></span>
-                <span id="current-engine">当前引擎：百度</span>
-            </div>
         </div>
 
         <div class="websites-grid">
-            <div class="website-card">
-                <img src="https://cdn-icons-png.flaticon.com/512/2504/2504911.png" alt="游戏">
-                <h3>游戏中心</h3>
-                <p>探索各类精彩游戏，放松身心</p>
-                <a href="#" target="_blank">进入</a>
-            </div>
-
-            <div class="website-card">
-                <img src="https://cdn-icons-png.flaticon.com/512/869/869869.png" alt="商铺">
-                <h3>精品商铺</h3>
-                <p>发现各类优质商品，购物无忧</p>
-                <a href="#" target="_blank">进入</a>
-            </div>
-
-            <div class="website-card">
-                <img src="https://v.qq.com/favicon.ico" alt="腾讯视频">
-                <h3>腾讯视频</h3>
-                <p>海量高清影视资源在线观看</p>
-                <a href="https://v.qq.com" target="_blank">进入</a>
-            </div>
-
-            <div class="website-card">
-                <img src="https://www.iqiyi.com/favicon.ico" alt="爱奇艺">
-                <h3>爱奇艺</h3>
-                <p>热门剧集、综艺、电影一网打尽</p>
-                <a href="https://www.iqiyi.com/?vfm=f_588_wrb&fv=ac30238882b84c8c" target="_blank">进入</a>
-            </div>
-
-            <div class="website-card">
-                <img src="https://www.youku.com/favicon.ico" alt="优酷">
-                <h3>优酷视频</h3>
-                <p>高清视频在线观看平台</p>
-                <a href="https://youku.com/" target="_blank">进入</a>
-            </div>
-
-            <div class="website-card">
-                <img src="https://www.mgtv.com/favicon.ico" alt="芒果TV">
-                <h3>芒果TV</h3>
-                <p>热门综艺和独家剧集</p>
-                <a href="https://www.mgtv.com/b/611422/20536518.html?cxid=bfan6mqcg" target="_blank">进入</a>
-            </div>
-
-            <div class="website-card">
-                <img src="https://cdn-icons-png.flaticon.com/512/2702/2702134.png" alt="小说">
-                <h3>小说天地</h3>
-                <p>海量小说免费阅读</p>
-                <a href="#" target="_blank">进入</a>
-            </div>
-
-            <div class="website-card">
-                <img src="https://cdn-icons-png.flaticon.com/512/3658/3658778.png" alt="家庭影院">
-                <h3>家庭影院</h3>
-                <p>打造您的专属观影空间</p>
-                <a href="#" target="_blank">进入</a>
-            </div>
-
-            <div class="website-card">
-                <img src="https://cdn-icons-png.flaticon.com/512/727/727241.png" alt="音乐">
-                <h3>音乐世界</h3>
-                <p>畅听百万高品质音乐</p>
-                <a href="#" target="_blank">进入</a>
-            </div>
-
-            <div class="website-card">
-                <img src="https://cdn-icons-png.flaticon.com/512/2504/2504940.png" alt="游戏下载">
-                <h3>游戏下载中心</h3>
-                <p>精彩游戏下载</p>
-                <a href="game.html">进入</a>
-            </div>
+            <!-- 网站卡片将由JavaScript动态生成 -->
         </div>
 
         <!-- 小部件区域 -->
@@ -456,193 +409,21 @@
             </div>
         </div>
     </div>
-
-    <!-- 发现页面 -->
-    <div id="discover" class="content-section">
-        <div class="discover-section">
-            <h2 class="search-title">发现新世界</h2>
-            <p style="text-align: center; margin-bottom: 30px; opacity: 0.8;">探索我们为您精选的优质网站</p>
-
-            <div class="discover-grid">
-                <div class="discover-card">
-                    <h3 class="discover-category">学习资源</h3>
-                    <div class="discover-websites">
-                        <div class="discover-item">
-                            <div class="discover-icon"><i class="fas fa-book"></i></div>
-                            <div class="discover-name">Coursera</div>
-                            <button class="add-to-fav-btn" data-name="Coursera" data-url="https://www.coursera.org" data-icon="fas fa-book">
-                                <i class="fas fa-plus"></i>收藏
-                            </button>
-                        </div>
-                        <div class="discover-item">
-                            <div class="discover-icon"><i class="fas fa-graduation-cap"></i></div>
-                            <div class="discover-name">edX</div>
-                            <button class="add-to-fav-btn" data-name="edX" data-url="https://www.edx.org" data-icon="fas fa-graduation-cap">
-                                <i class="fas fa-plus"></i>收藏
-                            </button>
-                        </div>
-                        <div class="discover-item">
-                            <div class="discover-icon"><i class="fas fa-laptop-code"></i></div>
-                            <div class="discover-name">freeCodeCamp</div>
-                            <button class="add-to-fav-btn" data-name="freeCodeCamp" data-url="https://www.freecodecamp.org" data-icon="fas fa-laptop-code">
-                                <i class="fas fa-plus"></i>收藏
-                            </button>
-                        </div>
-                        <div class="discover-item">
-                            <div class="discover-icon"><i class="fas fa-language"></i></div>
-                            <div class="discover-name">Duolingo</div>
-                            <button class="add-to-fav-btn" data-name="Duolingo" data-url="https://www.duolingo.com" data-icon="fas fa-language">
-                                <i class="fas fa-plus"></i>收藏
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="discover-card">
-                    <h3 class="discover-category">创意设计</h3>
-                    <div class="discover-websites">
-                        <div class="discover-item">
-                            <div class="discover-icon"><i class="fab fa-behance"></i></div>
-                            <div class="discover-name">Behance</div>
-                            <button class="add-to-fav-btn" data-name="Behance" data-url="https://www.behance.net" data-icon="fab fa-behance">
-                                <i class="fas fa-plus"></i>收藏
-                            </button>
-                        </div>
-                        <div class="discover-item">
-                            <div class="discover-icon"><i class="fas fa-palette"></i></div>
-                            <div class="discover-name">Dribbble</div>
-                            <button class="add-to-fav-btn" data-name="Dribbble" data-url="https://dribbble.com" data-icon="fas fa-palette">
-                                <i class="fas fa-plus"></i>收藏
-                            </button>
-                        </div>
-                        <div class="discover-item">
-                            <div class="discover-icon"><i class="fas fa-camera"></i></div>
-                            <div class="discover-name">Unsplash</div>
-                            <button class="add-to-fav-btn" data-name="Unsplash" data-url="https://unsplash.com" data-icon="fas fa-camera">
-                                <i class="fas fa-plus"></i>收藏
-                            </button>
-                        </div>
-                        <div class="discover-item">
-                            <div class="discover-icon"><i class="fas fa-pencil-ruler"></i></div>
-                            <div class="discover-name">Canva</div>
-                            <button class="add-to-fav-btn" data-name="Canva" data-url="https://www.canva.com" data-icon="fas fa-pencil-ruler">
-                                <i class="fas fa-plus"></i>收藏
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="discover-card">
-                    <h3 class="discover-category">科技前沿</h3>
-                    <div class="discover-websites">
-                        <div class="discover-item">
-                            <div class="discover-icon"><i class="fab fa-github"></i></div>
-                            <div class="discover-name">GitHub</div>
-                            <button class="add-to-fav-btn" data-name="GitHub" data-url="https://github.com" data-icon="fab fa-github">
-                                <i class="fas fa-plus"></i>收藏
-                            </button>
-                        </div>
-                        <div class="discover-item">
-                            <div class="discover-icon"><i class="fas fa-code"></i></div>
-                            <div class="discover-name">Stack Overflow</div>
-                            <button class="add-to-fav-btn" data-name="Stack Overflow" data-url="https://stackoverflow.com" data-icon="fas fa-code">
-                                <i class="fas fa-plus"></i>收藏
-                            </button>
-                        </div>
-                        <div class="discover-item">
-                            <div class="discover-icon"><i class="fab fa-medium"></i></div>
-                            <div class="discover-name">Medium</div>
-                            <button class="add-to-fav-btn" data-name="Medium" data-url="https://medium.com" data-icon="fab fa-medium">
-                                <i class="fas fa-plus"></i>收藏
-                            </button>
-                        </div>
-                        <div class="discover-item">
-                            <div class="discover-icon"><i class="fas fa-flask"></i></div>
-                            <div class="discover-name">ArXiv</div>
-                            <button class="add-to-fav-btn" data-name="ArXiv" data-url="https://arxiv.org" data-icon="fas fa-flask">
-                                <i class="fas fa-plus"></i>收藏
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 收藏页面 -->
-    <div id="favorites" class="content-section">
-        <div class="favorites-header">
-            <h2 class="search-title">我的收藏</h2>
-            <button class="add-favorite-btn" id="add-favorite-btn">
-                <i class="fas fa-plus"></i>添加收藏
-            </button>
-        </div>
-
-        <div class="favorites-grid" id="favorites-grid">
-            <!-- 收藏内容将由JS动态生成 -->
-            <div class="favorite-card">
-                <div class="favorite-card-header">
-                    <div class="favorite-icon">
-                        <i class="fab fa-github"></i>
-                    </div>
-                    <div class="favorite-title">GitHub</div>
-                </div>
-                <div class="favorite-url">https://github.com</div>
-                <div class="favorite-actions">
-                    <button class="favorite-btn visit-favorite">
-                        <i class="fas fa-external-link-alt"></i> 访问
-                    </button>
-                    <button class="favorite-btn edit-favorite">
-                        <i class="fas fa-edit"></i> 编辑
-                    </button>
-                    <button class="favorite-btn delete-favorite">
-                        <i class="fas fa-trash"></i> 删除
-                    </button>
-                </div>
-            </div>
-
-            <div class="favorite-card">
-                <div class="favorite-card-header">
-                    <div class="favorite-icon">
-                        <i class="fab fa-youtube"></i>
-                    </div>
-                    <div class="favorite-title">YouTube</div>
-                </div>
-                <div class="favorite-url">https://www.youtube.com</div>
-                <div class="favorite-actions">
-                    <button class="favorite-btn visit-favorite">
-                        <i class="fas fa-external-link-alt"></i> 访问
-                    </button>
-                    <button class="favorite-btn edit-favorite">
-                        <i class="fas fa-edit"></i> 编辑
-                    </button>
-                    <button class="favorite-btn delete-favorite">
-                        <i class="fas fa-trash"></i> 删除
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="empty-state" id="empty-favorites" style="display: none;">
-            <i class="fas fa-star"></i>
-            <h3>您还没有任何收藏</h3>
-            <p>点击"添加收藏"按钮或到"发现"页面添加您喜欢的网站</p>
-        </div>
-    </div>
 </div>
 
-<footer>
-    <div class="footer-links">
-        <a href="#">关于我们</a>
-        <a href="#">帮助中心</a>
-        <a href="#">隐私政策</a>
-        <a href="#">使用条款</a>
-        <a href="#">免责声明</a>
-    </div>
-    <div class="copyright">
-        &copy; 2023 星辰导航 - 您的个性化导航平台 | 让网络探索更加简单
-    </div>
-</footer>
+<!-- 底部版权信息 -->
+<div class="copyright-text">
+    &copy; 2023 星辰导航 - 您的个性化导航平台 | 让网络探索更加简单
+</div>
+<div class="beian-info">
+    <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">
+        备案号：京ICP备2023000000号-1
+    </a>
+    |
+    <a href="http://www.beian.gov.cn/" target="_blank" rel="noopener">
+        公安备案号：11010802000000号
+    </a>
+</div>
 
 <script src="assets/js/app.js"></script>
 </body>

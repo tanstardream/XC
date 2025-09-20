@@ -863,8 +863,10 @@ input:checked + .slider:before {
     box-shadow: var(--card-shadow);
     transition: var(--transition);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    max-width: 700px;
+    max-width: 500px;
     width: 100%;
+    justify-content: center;
+    align-items: center;
 }
 
 .search-box:hover {
@@ -914,9 +916,10 @@ input:checked + .slider:before {
     border: none;
     background: transparent;
     outline: none;
-    padding: 15px 20px;
+    padding: 20px 25px;
     color: white;
     font-size: 18px;
+    text-align: center;
 }
 
 .search-text::placeholder {
@@ -1598,6 +1601,204 @@ footer {
     margin: 0 auto;
 }
 
+/* 卡片编辑按钮 */
+.card-edit-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.website-card:hover .card-edit-btn {
+    opacity: 1;
+}
+
+.card-edit-btn:hover {
+    background: var(--accent);
+    transform: scale(1.1);
+}
+
+/* 卡片编辑模态框 */
+.card-edit-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-edit-modal.active {
+    display: flex;
+}
+
+.card-edit-modal-content {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    position: relative;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.card-edit-modal-title {
+    font-size: 1.5rem;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.close-card-edit-modal {
+    background: none;
+    border: none;
+    color: var(--light);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.close-card-edit-modal:hover {
+    color: var(--accent);
+    transform: rotate(90deg);
+}
+
+.card-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.card-edit-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.card-edit-form label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    color: var(--light);
+}
+
+.card-edit-form input {
+    padding: 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--light);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.card-edit-form input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.card-edit-form input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.card-edit-form-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.card-edit-form-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.card-edit-form-submit {
+    background: var(--gradient);
+    color: white;
+}
+
+.card-edit-form-submit:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.card-edit-form-cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--light);
+}
+
+.card-edit-form-cancel:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* 浅色主题适配 */
+body.light-theme .card-edit-btn {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+body.light-theme .card-edit-modal-content {
+    background: rgba(248, 250, 252, 0.95);
+    border: 1px solid rgba(30, 41, 59, 0.1);
+}
+
+body.light-theme .card-edit-modal-title {
+    color: #1e293b;
+}
+
+body.light-theme .close-card-edit-modal {
+    color: #1e293b;
+}
+
+body.light-theme .card-edit-form label {
+    color: #1e293b;
+}
+
+body.light-theme .card-edit-form input {
+    background: rgba(30, 41, 59, 0.05);
+    border: 1px solid rgba(30, 41, 59, 0.1);
+    color: #1e293b;
+}
+
+body.light-theme .card-edit-form input::placeholder {
+    color: rgba(30, 41, 59, 0.5);
+}
+
+body.light-theme .card-edit-form-cancel {
+    background: rgba(30, 41, 59, 0.1);
+    color: #1e293b;
+}
+
 /* 搜索引擎管理模态框 */
 .engine-modal {
     display: none;
@@ -2142,6 +2343,73 @@ body.light-theme .discover-name {
 
     .search-title {
         font-size: 3rem;
+    }
+}
+
+/* 底部版权信息 - 直接在背景上，跟随滚动 */
+.copyright-text {
+    text-align: center;
+    margin: 40px 20px 10px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.beian-info {
+    text-align: center;
+    margin: 0 20px 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.beian-info a {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.beian-info a:hover {
+    color: var(--accent);
+}
+
+/* 浅色主题适配 */
+body.light-theme .copyright-text {
+    color: rgba(30, 41, 59, 0.8);
+    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+}
+
+body.light-theme .beian-info {
+    color: rgba(30, 41, 59, 0.7);
+}
+
+body.light-theme .beian-info a {
+    color: rgba(30, 41, 59, 0.7);
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+body.light-theme .beian-info a:hover {
+    color: var(--accent);
+}
+
+/* 响应式设计 */
+@media (max-width: 600px) {
+    .copyright-text {
+        font-size: 0.75rem;
+        margin: 30px 15px 10px;
+    }
+    
+    .beian-info {
+        flex-direction: column;
+        gap: 5px;
+        font-size: 0.7rem;
+        margin: 0 15px 25px;
     }
 }
 
