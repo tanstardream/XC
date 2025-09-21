@@ -303,6 +303,9 @@
     position: relative;
     width: 100%;
     max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* 小部件样式 */
@@ -337,21 +340,30 @@
     color: var(--light);
 }
 
+/* 时钟容器样式 */
+.clock-container {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
 /* 时钟样式 */
 .clock {
     font-family: 'Digital', monospace;
-    font-size: 2.5rem;
+    font-size: 4rem;
+    font-weight: bold;
     text-align: center;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
     border-radius: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    color: var(--light);
 }
 
 .date {
     text-align: center;
-    font-size: 1rem;
+    font-size: 1.2rem;
     opacity: 0.8;
+    color: var(--light);
+    font-weight: 600;
 }
 
 /* 备忘录样式 */
@@ -856,23 +868,60 @@ input:checked + .slider:before {
 /* 更新搜索框样式 */
 .search-box {
     display: flex;
+    align-items: center;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 50px;
-    padding: 5px;
+    padding: 8px 25px;
     backdrop-filter: blur(10px);
     box-shadow: var(--card-shadow);
     transition: var(--transition);
     border: 1px solid rgba(255, 255, 255, 0.1);
     max-width: 500px;
     width: 100%;
-    justify-content: center;
-    align-items: center;
+    position: relative;
+    margin: 0 auto;
 }
 
 .search-box:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 20px rgba(138, 43, 226, 0.3);
     border-color: rgba(138, 43, 226, 0.3);
+}
+
+.search-text {
+    flex: 1;
+    border: none;
+    background: transparent;
+    outline: none;
+    padding: 12px 0;
+    color: white;
+    font-size: 18px;
+    text-align: left;
+}
+
+.search-text::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.search-icon {
+    position: absolute;
+    right: 20px;
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: var(--transition);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.search-icon.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.search-icon:hover {
+    color: var(--primary);
+    transform: scale(1.1);
 }
 
 /* 搜索引擎选择器 */
@@ -926,56 +975,52 @@ input:checked + .slider:before {
     color: rgba(255, 255, 255, 0.6);
 }
 
-.search-btn {
-    background: var(--gradient);
-    border: none;
-    width: 60px;
+/* 搜索引擎选择器 */
+.engine-selector {
+    position: relative;
+    min-width: 100px;
+    margin-right: 5px;
+}
+
+.engine-select {
+    width: 100%;
     height: 60px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    border: none;
+    background: rgba(65, 105, 225, 0.3);
+    color: white;
+    border-radius: 30px;
+    padding: 0 15px 0 45px;
+    font-size: 14px;
+    appearance: none;
+    outline: none;
     cursor: pointer;
     transition: var(--transition);
 }
 
-.search-btn:hover {
-    transform: rotate(15deg) scale(1.1);
+.engine-select:hover {
+    background: rgba(65, 105, 225, 0.5);
 }
 
-.search-btn i {
+.engine-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
     color: white;
-    font-size: 24px;
+    pointer-events: none;
 }
 
-/* 当前引擎指示器 */
-.engine-indicator {
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 14px;
-    transition: var(--transition);
+.search-text {
+    flex: 1;
+    border: none;
+    background: transparent;
+    outline: none;
+    padding: 20px 25px;
+    color: white;
+    font-size: 18px;
+    text-align: center;
 }
-
-.engine-indicator .indicator {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #4169e1;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% { transform: scale(0.9); opacity: 0.7; }
-    50% { transform: scale(1.1); opacity: 1; }
-    100% { transform: scale(0.9); opacity: 0.7; }
-}
-
-/* 网站网格 */
 .websites-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -1981,6 +2026,22 @@ body.light-theme .search-box {
     box-shadow: 0 4px 20px rgba(30, 41, 59, 0.1);
 }
 
+body.light-theme .search-text {
+    color: #1e293b;
+}
+
+body.light-theme .search-text::placeholder {
+    color: rgba(30, 41, 59, 0.5);
+}
+
+body.light-theme .search-icon {
+    color: rgba(30, 41, 59, 0.6);
+}
+
+body.light-theme .search-icon:hover {
+    color: var(--primary);
+}
+
 body.light-theme .engine-select {
     background: rgba(30, 41, 59, 0.05);
     color: #1e293b;
@@ -2127,6 +2188,15 @@ body.light-theme .discover-name {
     color: #1e293b;
 }
 
+/* 浅色主题时钟样式 */
+body.light-theme .clock {
+    color: #1e293b;
+}
+
+body.light-theme .date {
+    color: #1e293b;
+}
+
 /* 响应式设计 */
 @media (max-width: 900px) {
     header {
@@ -2199,13 +2269,17 @@ body.light-theme .discover-name {
 
     .search-container {
         width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .search-box {
         width: 100%;
-        flex-direction: column;
-        padding: 10px;
+        max-width: 100%;
+        padding: 10px 20px;
         border-radius: 20px;
+        margin: 0 auto;
     }
 
     .engine-selector {
@@ -2303,7 +2377,15 @@ body.light-theme .discover-name {
     }
 
     .clock {
-        font-size: 2rem;
+        font-size: 3rem;
+    }
+
+    .date {
+        font-size: 1rem;
+    }
+
+    .clock-container {
+        margin-bottom: 30px;
     }
 
     .footer-links {

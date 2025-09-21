@@ -601,98 +601,6 @@ function updateClock() {
     date.textContent = now.toLocaleDateString('zh-CN', options);
 }
 
-// 备忘录功能
-let notes = [];
-
-function initNotes() {
-    loadNotes();
-    renderNotes();
-    
-    // 添加备忘录事件监听
-    document.getElementById('add-note-btn').addEventListener('click', addNote);
-    document.getElementById('note-input').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            addNote();
-        }
-    });
-}
-
-function loadNotes() {
-    const savedNotes = localStorage.getItem('notes');
-    if (savedNotes) {
-        notes = JSON.parse(savedNotes);
-    }
-}
-
-function saveNotes() {
-    localStorage.setItem('notes', JSON.stringify(notes));
-}
-
-function renderNotes() {
-    const notesList = document.getElementById('notes-list');
-    notesList.innerHTML = '';
-    
-    if (notes.length === 0) {
-        notesList.innerHTML = '<p style="text-align: center; opacity: 0.7;">暂无备忘录</p>';
-        return;
-    }
-    
-    notes.forEach((note, index) => {
-        const noteItem = document.createElement('div');
-        noteItem.classList.add('note-item');
-        noteItem.innerHTML = `
-            <div class="note-text">${note}</div>
-            <div class="note-actions">
-                <button class="note-btn edit-note" data-index="${index}"><i class="fas fa-edit"></i></button>
-                <button class="note-btn delete-note" data-index="${index}"><i class="fas fa-trash"></i></button>
-            </div>
-        `;
-        notesList.appendChild(noteItem);
-    });
-    
-    // 添加删除和编辑事件
-    document.querySelectorAll('.delete-note').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const index = this.getAttribute('data-index');
-            deleteNote(index);
-        });
-    });
-    
-    document.querySelectorAll('.edit-note').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const index = this.getAttribute('data-index');
-            editNote(index);
-        });
-    });
-}
-
-function addNote() {
-    const noteInput = document.getElementById('note-input');
-    const text = noteInput.value.trim();
-    
-    if (text) {
-        notes.push(text);
-        saveNotes();
-        renderNotes();
-        noteInput.value = '';
-    }
-}
-
-function deleteNote(index) {
-    notes.splice(index, 1);
-    saveNotes();
-    renderNotes();
-}
-
-function editNote(index) {
-    const newText = prompt('编辑备忘录:', notes[index]);
-    if (newText !== null) {
-        notes[index] = newText.trim();
-        saveNotes();
-        renderNotes();
-    }
-}
-
 // 搜索历史和建议
 let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
 const searchSuggestions = [
@@ -1032,10 +940,16 @@ function initThemeKeyboard() {
     });
 }
 
-// 天气功能
+// 天气功能（增强版，支持定位记忆）
 let currentCity = '北京';
+let userLocation = null; // 用户的地理位置信息
 
-function initWeather() {
+// 初始化天气功能
+async function initWeather() {
+    // 尝试获取用户的地理位置
+    await initUserLocation();
+    
+    // 加载天气数据
     loadWeatherData();
     
     // 刷新天气按钮
@@ -1053,16 +967,121 @@ function initWeather() {
         const newCity = prompt('请输入城市名称:', currentCity);
         if (newCity && newCity.trim() !== '') {
             currentCity = newCity.trim();
-            localStorage.setItem('weather_city', currentCity);
+            // 保存用户设置的城市到localStorage
+            localStorage.setItem('weather_user_city', currentCity);
+            localStorage.setItem('weather_location_type', 'manual'); // 标记为手动设置
+            
+            // 立即更新位置显示
+            const locationText = document.getElementById('location-text');
+            if (locationText) {
+                locationText.textContent = currentCity;
+            }
+            
             loadWeatherData();
             showNotification(`已切换到${currentCity}`, 'success', 2000);
         }
     });
+}
+
+// 初始化用户位置（自动获取或使用保存的位置）
+async function initUserLocation() {
+    console.log('初始化用户位置...');
     
-    // 从localStorage读取保存的城市
-    const savedCity = localStorage.getItem('weather_city');
-    if (savedCity) {
+    // 检查是否有保存的位置设置
+    const savedCity = localStorage.getItem('weather_user_city');
+    const locationType = localStorage.getItem('weather_location_type');
+    
+    if (savedCity && locationType === 'manual') {
+        // 用户手动设置过城市，优先使用
         currentCity = savedCity;
+        console.log('使用保存的手动设置城市:', currentCity);
+        return;
+    }
+    
+    // 尝试自动获取地理位置
+    if ('geolocation' in navigator) {
+        try {
+            console.log('尝试获取地理位置...');
+            const position = await getCurrentPosition();
+            userLocation = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                accuracy: position.coords.accuracy
+            };
+            
+            // 根据坐标获取城市名称
+            const cityName = await getCityFromCoordinates(userLocation.latitude, userLocation.longitude);
+            if (cityName) {
+                currentCity = cityName;
+                // 保存自动获取的位置
+                localStorage.setItem('weather_user_city', currentCity);
+                localStorage.setItem('weather_location_type', 'auto');
+                localStorage.setItem('weather_coordinates', JSON.stringify(userLocation));
+                console.log('自动获取位置成功:', currentCity);
+                showNotification(`已自动定位到${currentCity}`, 'success', 3000);
+                
+                // 更新位置显示
+                const locationText = document.getElementById('location-text');
+                if (locationText) {
+                    locationText.textContent = currentCity;
+                }
+            }
+        } catch (error) {
+            console.log('地理位置获取失败:', error.message);
+            // 使用保存的城市或默认城市
+            if (savedCity) {
+                currentCity = savedCity;
+                console.log('使用保存的城市:', currentCity);
+            } else {
+                console.log('使用默认城市:', currentCity);
+            }
+        }
+    } else {
+        console.log('浏览器不支持地理位置');
+        if (savedCity) {
+            currentCity = savedCity;
+        }
+    }
+    
+    // 确保位置显示正确更新
+    const locationText = document.getElementById('location-text');
+    if (locationText) {
+        locationText.textContent = currentCity;
+    }
+}
+
+// 获取当前位置的Promise封装
+function getCurrentPosition() {
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+            timeout: 10000,
+            maximumAge: 600000, // 10分钟内的缓存位置有效
+            enableHighAccuracy: false
+        });
+    });
+}
+
+// 根据坐标获取城市名称
+async function getCityFromCoordinates(lat, lng) {
+    try {
+        // 使用免费的逆地理编码服务
+        const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=zh`);
+        const data = await response.json();
+        
+        // 优先使用城市名，然后是地区名
+        const cityName = data.city || data.locality || data.principalSubdivision || '未知城市';
+        console.log('逆地理编码结果:', {
+            city: data.city,
+            locality: data.locality,
+            region: data.principalSubdivision,
+            country: data.countryName,
+            selected: cityName
+        });
+        
+        return cityName;
+    } catch (error) {
+        console.log('逆地理编码失败:', error);
+        return null;
     }
 }
 
@@ -1080,37 +1099,80 @@ function loadWeatherData() {
         </div>
     `;
     
-    // 模拟天气数据（实际应用中应该调用真实的天气API）
+    // 根据城市获取天气数据
     setTimeout(() => {
-        const mockWeatherData = generateMockWeather();
-        displayWeatherData(mockWeatherData);
+        const weatherData = getWeatherByCity(currentCity);
+        displayWeatherData(weatherData);
     }, 1500);
 }
 
-function generateMockWeather() {
-    const conditions = [
-        { icon: 'fas fa-sun', class: 'sunny', desc: '晴朗', temp: 25 },
-        { icon: 'fas fa-cloud-sun', class: 'cloudy', desc: '多云', temp: 22 },
-        { icon: 'fas fa-cloud-rain', class: 'rainy', desc: '小雨', temp: 18 },
-        { icon: 'fas fa-snowflake', class: 'snowy', desc: '小雪', temp: -2 }
-    ];
+// 根据城市获取天气数据
+function getWeatherByCity(city) {
+    // 城市天气数据库（基于季节和地理位置的合理天气）
+    const cityWeatherData = {
+        '北京': { icon: 'fas fa-cloud', class: 'cloudy', desc: '多云', temp: 8, humidity: 65, windSpeed: 12, pressure: 1018, visibility: 15 },
+        '上海': { icon: 'fas fa-cloud-rain', class: 'rainy', desc: '小雨', temp: 12, humidity: 78, windSpeed: 8, pressure: 1015, visibility: 8 },
+        '广州': { icon: 'fas fa-cloud-sun', class: 'cloudy', desc: '多云', temp: 22, humidity: 72, windSpeed: 6, pressure: 1012, visibility: 12 },
+        '深圳': { icon: 'fas fa-sun', class: 'sunny', desc: '晴朗', temp: 24, humidity: 68, windSpeed: 5, pressure: 1013, visibility: 18 },
+        '杭州': { icon: 'fas fa-cloud-rain', class: 'rainy', desc: '阴雨', temp: 14, humidity: 82, windSpeed: 7, pressure: 1016, visibility: 6 },
+        '成都': { icon: 'fas fa-cloud', class: 'cloudy', desc: '阴天', temp: 16, humidity: 75, windSpeed: 4, pressure: 1020, visibility: 10 },
+        '重庆': { icon: 'fas fa-cloud', class: 'cloudy', desc: '多云', temp: 18, humidity: 79, windSpeed: 3, pressure: 1017, visibility: 9 },
+        '武汉': { icon: 'fas fa-cloud-sun', class: 'cloudy', desc: '多云', temp: 11, humidity: 70, windSpeed: 9, pressure: 1019, visibility: 13 },
+        '西安': { icon: 'fas fa-sun', class: 'sunny', desc: '晴朗', temp: 9, humidity: 58, windSpeed: 11, pressure: 1021, visibility: 16 },
+        '南京': { icon: 'fas fa-cloud-rain', class: 'rainy', desc: '小雨', temp: 13, humidity: 76, windSpeed: 8, pressure: 1014, visibility: 7 },
+        '天津': { icon: 'fas fa-cloud', class: 'cloudy', desc: '多云', temp: 7, humidity: 62, windSpeed: 13, pressure: 1020, visibility: 14 },
+        '青岛': { icon: 'fas fa-wind', class: 'cloudy', desc: '多风', temp: 10, humidity: 74, windSpeed: 18, pressure: 1016, visibility: 12 },
+        '大连': { icon: 'fas fa-cloud-sun', class: 'cloudy', desc: '多云', temp: 6, humidity: 67, windSpeed: 15, pressure: 1022, visibility: 11 },
+        '厦门': { icon: 'fas fa-sun', class: 'sunny', desc: '晴朗', temp: 21, humidity: 71, windSpeed: 7, pressure: 1011, visibility: 17 },
+        '昆明': { icon: 'fas fa-sun', class: 'sunny', desc: '晴朗', temp: 19, humidity: 55, windSpeed: 5, pressure: 1025, visibility: 20 },
+        '哈尔滨': { icon: 'fas fa-snowflake', class: 'snowy', desc: '小雪', temp: -8, humidity: 78, windSpeed: 14, pressure: 1028, visibility: 8 },
+        '长春': { icon: 'fas fa-snowflake', class: 'snowy', desc: '小雪', temp: -5, humidity: 75, windSpeed: 12, pressure: 1026, visibility: 9 },
+        '沈阳': { icon: 'fas fa-cloud', class: 'cloudy', desc: '阴天', temp: 1, humidity: 69, windSpeed: 10, pressure: 1024, visibility: 12 },
+        '三亚': { icon: 'fas fa-sun', class: 'sunny', desc: '晴朗', temp: 28, humidity: 76, windSpeed: 8, pressure: 1008, visibility: 19 },
+        '拉萨': { icon: 'fas fa-sun', class: 'sunny', desc: '晴朗', temp: 12, humidity: 35, windSpeed: 6, pressure: 1030, visibility: 25 },
+        '乌鲁木齐': { icon: 'fas fa-snowflake', class: 'snowy', desc: '雪', temp: -12, humidity: 72, windSpeed: 16, pressure: 1032, visibility: 5 }
+    };
     
-    const current = conditions[Math.floor(Math.random() * conditions.length)];
+    // 获取城市天气，如果城市不在数据库中，则生成基于城市名的模拟数据
+    let weather = cityWeatherData[city];
+    if (!weather) {
+        // 为未知城市生成基于地理规律的天气
+        weather = generateWeatherForUnknownCity(city);
+    }
     
     return {
-        city: currentCity,
+        city: city,
         current: {
-            temperature: current.temp + Math.floor(Math.random() * 10 - 5),
-            condition: current.desc,
-            icon: current.icon,
-            iconClass: current.class,
-            humidity: 45 + Math.floor(Math.random() * 40),
-            windSpeed: Math.floor(Math.random() * 15) + 3,
-            pressure: 1010 + Math.floor(Math.random() * 40),
-            visibility: 8 + Math.floor(Math.random() * 12)
+            temperature: weather.temp + Math.floor(Math.random() * 6 - 3), // 添加±3度随机波动
+            condition: weather.desc,
+            icon: weather.icon,
+            iconClass: weather.class,
+            humidity: weather.humidity + Math.floor(Math.random() * 10 - 5),
+            windSpeed: weather.windSpeed + Math.floor(Math.random() * 4 - 2),
+            pressure: weather.pressure + Math.floor(Math.random() * 8 - 4),
+            visibility: weather.visibility + Math.floor(Math.random() * 6 - 3)
         },
         forecast: generateForecast()
     };
+}
+
+// 为未知城市生成天气数据
+function generateWeatherForUnknownCity(city) {
+    const conditions = [
+        { icon: 'fas fa-sun', class: 'sunny', desc: '晴朗', temp: 15, humidity: 55, windSpeed: 8, pressure: 1018, visibility: 18 },
+        { icon: 'fas fa-cloud-sun', class: 'cloudy', desc: '多云', temp: 12, humidity: 65, windSpeed: 10, pressure: 1015, visibility: 14 },
+        { icon: 'fas fa-cloud-rain', class: 'rainy', desc: '小雨', temp: 10, humidity: 78, windSpeed: 6, pressure: 1012, visibility: 8 },
+        { icon: 'fas fa-cloud', class: 'cloudy', desc: '阴天', temp: 8, humidity: 70, windSpeed: 7, pressure: 1020, visibility: 12 }
+    ];
+    
+    // 基于城市名生成一致的"随机"天气（使用城市名作为种子）
+    let hash = 0;
+    for (let i = 0; i < city.length; i++) {
+        hash = ((hash << 5) - hash + city.charCodeAt(i)) & 0xffffffff;
+    }
+    const index = Math.abs(hash) % conditions.length;
+    
+    return conditions[index];
 }
 
 function generateForecast() {
@@ -1785,7 +1847,6 @@ function initDataManagement() {
             userSettings: userSettings,
             userFavorites: userFavorites,
             searchHistory: searchHistory,
-            notes: notes,
             searchEngines: searchEngines,
             exportDate: new Date().toISOString()
         };
@@ -1828,10 +1889,6 @@ function initDataManagement() {
                         searchHistory = data.searchHistory;
                         localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
                     }
-                    if (data.notes) {
-                        notes = data.notes;
-                        localStorage.setItem('notes', JSON.stringify(notes));
-                    }
                     if (data.searchEngines) {
                         searchEngines = data.searchEngines;
                     }
@@ -1840,7 +1897,6 @@ function initDataManagement() {
                     applySettings();
                     renderFavorites();
                     renderEngineList();
-                    renderNotes();
                     updateEngineSelect();
                     
                     showNotification('数据导入成功！页面将刷新以应用设置。', 'success', 2000);
@@ -1882,7 +1938,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // renderFavorites(); // 暂时注释掉，因为页面上没有收藏元素
     // renderEngineList(); // 暂时注释掉，因为页面上没有引擎列表元素
     initClock();
-    initNotes();
     initSearchSuggestions();
     initQuickAccess();
     initDataManagement();
@@ -2047,16 +2102,32 @@ document.addEventListener('DOMContentLoaded', () => {
         settingsMenu.classList.remove('active');
     });
 
-    // 搜索框回车键支持
+    // 搜索框回车键支持和搜索图标显示控制
     const searchInput = document.querySelector('.search-text');
+    const searchIcon = document.getElementById('search-icon');
+    
+    // 输入框内容变化时控制搜索图标显示
+    searchInput.addEventListener('input', (e) => {
+        if (e.target.value.trim()) {
+            searchIcon.classList.add('visible');
+        } else {
+            searchIcon.classList.remove('visible');
+        }
+    });
+    
+    // 回车键搜索
     searchInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && e.target.value.trim()) {
             performSearch();
         }
     });
-
-    // 搜索按钮点击事件
-    document.getElementById('search-btn').addEventListener('click', performSearch);
+    
+    // 点击搜索图标搜索
+    searchIcon.addEventListener('click', () => {
+        if (searchInput.value.trim()) {
+            performSearch();
+        }
+    });
 
     // 添加收藏按钮点击事件（如果存在的话）
     const addFavoriteBtn = document.getElementById('add-favorite-btn');

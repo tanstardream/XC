@@ -333,12 +333,16 @@
     <!-- 首页内容 -->
     <div id="home" class="content-section active">
         <div class="search-section">
+            <!-- 时钟部分 -->
+            <div class="clock-container">
+                <div class="clock" id="clock">00:00:00</div>
+                <div class="date" id="date">2023年1月1日 星期一</div>
+            </div>
+            
             <div class="search-container">
                 <div class="search-box">
-                    <input type="text" class="search-text" name="inputs" placeholder="" id="search-input">
-                    <a class="search-btn" id="search-btn">
-                        <i class="fas fa-search"></i>
-                    </a>
+                    <input type="text" class="search-text" name="inputs" placeholder="请输入搜索内容..." id="search-input">
+                    <i class="fas fa-search search-icon" id="search-icon"></i>
                 </div>
                 
                 <!-- 搜索建议下拉框 -->
@@ -353,57 +357,33 @@
         </div>
 
         <!-- 小部件区域 -->
-        <div class="widgets-container" style="width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
-            <!-- 时钟小部件 -->
-            <div class="widget">
-                <div class="widget-header">
-                    <h3 class="widget-title"><i class="fas fa-clock"></i> 时钟</h3>
-                </div>
-                <div class="widget-content">
-                    <div class="clock" id="clock">00:00:00</div>
-                    <div class="date" id="date">2023年1月1日 星期一</div>
-                </div>
-            </div>
-
-            <!-- 备忘录小部件 -->
-            <div class="widget">
-                <div class="widget-header">
-                    <h3 class="widget-title"><i class="fas fa-sticky-note"></i> 备忘录</h3>
-                </div>
-                <div class="widget-content">
-                    <div class="notes-list" id="notes-list">
-                        <!-- 备忘录内容将通过JS动态生成 -->
-                    </div>
-                    <div class="add-note-form">
-                        <input type="text" class="note-input" id="note-input" placeholder="添加新备忘录...">
-                        <button class="add-note-btn" id="add-note-btn"><i class="fas fa-plus"></i></button>
-                    </div>
-                </div>
-            </div>
-
+        <div class="widgets-container" style="width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 25px;">
             <!-- 天气小部件 -->
             <div class="widget">
                 <div class="widget-header">
-                    <h3 class="widget-title"><i class="fas fa-cloud-sun"></i> 天气</h3>
-                    <button class="note-btn" id="refresh-weather" title="刷新天气">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
+                    <h3 class="widget-title"><i class="fas fa-cloud-sun"></i> 天气信息</h3>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="note-btn" id="refresh-weather" title="刷新天气">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button class="note-btn" id="change-location" title="更改城市">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="widget-content">
+                    <!-- 天气部分 -->
                     <div class="weather-display" id="weather-display">
                         <div class="weather-loading">
                             <div class="loading-spinner"></div>
                             <span>正在获取天气信息...</span>
                         </div>
                     </div>
-                    <div class="weather-location" id="weather-location">
+                    <div class="weather-location" id="weather-location" style="margin-top: 15px;">
                         <div class="weather-location-info">
                             <i class="fas fa-map-marker-alt"></i>
                             <span id="location-text">获取位置中...</span>
                         </div>
-                        <button class="note-btn" id="change-location" title="更改城市">
-                            <i class="fas fa-edit"></i>
-                        </button>
                     </div>
                 </div>
             </div>
