@@ -4,7 +4,8 @@
       "Bash(git config:*)",
       "Bash(tree:*)",
       "Bash(mkdir:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Read(//c/Users/asos/Pictures/PixPinAutoSave/**)"
     ],
     "deny": [],
     "ask": []

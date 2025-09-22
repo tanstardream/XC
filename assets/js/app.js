@@ -603,6 +603,16 @@ function updateClock() {
 
 // 搜索历史和建议
 let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+// 过滤掉无效的搜索历史
+searchHistory = searchHistory.filter(item => 
+    item && 
+    typeof item === 'string' && 
+    item.trim().length > 1 && 
+    !['搜索', 'search', ''].includes(item.toLowerCase().trim())
+);
+// 重新保存清理后的历史
+localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+
 const searchSuggestions = [
     '天气预报', '在线翻译', '新闻资讯', '股票行情', '电影推荐',
     '音乐播放', '小说阅读', '游戏下载', '学习资料', '技术教程'
@@ -644,8 +654,14 @@ function initSearchSuggestions() {
             return;
         }
         
-        // 合并搜索历史和预设建议
-        const allSuggestions = [...new Set([...searchHistory, ...searchSuggestions])];
+        // 合并搜索历史和预设建议，过滤无效项
+        const validHistory = searchHistory.filter(item => 
+            item && 
+            typeof item === 'string' && 
+            item.trim().length > 1 && 
+            !['搜索', 'search', ''].includes(item.toLowerCase().trim())
+        );
+        const allSuggestions = [...new Set([...validHistory, ...searchSuggestions])];
         const filteredSuggestions = allSuggestions
             .filter(suggestion => suggestion.toLowerCase().includes(query.toLowerCase()))
             .slice(0, 8);
@@ -767,36 +783,64 @@ function initQuickAccess() {
     console.log('Quick access initialization complete');
 }
 
-// 增强的搜索功能
-function performSearchEnhanced() {
-    // 使用当前选择的搜索引擎
-    const engine = searchEngines.find(e => e.id === currentSearchEngine);
-    if (!engine) {
-        console.error('未找到搜索引擎:', currentSearchEngine);
-        return;
-    }
-
+// 增强的搜索功能 - 实时检测Google可访问性
+async function performSearchEnhanced() {
     const query = document.getElementById('search-input').value.trim();
 
     if (query) {
-        // 添加到搜索历史
-        if (!searchHistory.includes(query)) {
+        // 过滤无效搜索词，添加到搜索历史
+        if (query.length > 1 && 
+            !['搜索', 'search', ''].includes(query.toLowerCase()) &&
+            !searchHistory.includes(query)) {
             searchHistory.unshift(query);
             searchHistory = searchHistory.slice(0, 10); // 只保留最近10条
             localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
         }
         
-        // 显示加载状态
-        const searchBtn = document.querySelector('.search-btn');
-        const originalHTML = searchBtn.innerHTML;
-        searchBtn.innerHTML = '<div class="loading-spinner"></div>';
+        // 显示加载状态在搜索图标上
+        const searchIcon = document.getElementById('search-icon');
+        const originalClass = searchIcon.className;
+        searchIcon.className = 'fas fa-spinner fa-spin search-icon visible';
         
-        // 模拟加载延迟
-        setTimeout(() => {
-            searchBtn.innerHTML = originalHTML;
-            window.open(engine.url + encodeURIComponent(query), '_blank');
-            showNotification(`正在使用${engine.name}搜索: ${query}`, 'info', 2000);
-        }, 500);
+        // 实时检测Google和Bing的可访问性
+        console.log('开始实时网络检测...');
+        const googleEngine = searchEngines.find(e => e.id === 'google');
+        const bingEngine = searchEngines.find(e => e.id === 'bing');
+        
+        try {
+            // 同时检测Google可访问性
+            const isGoogleAccessible = await checkGoogleAccessWithTimeout();
+            
+            let selectedEngine, engineName;
+            if (isGoogleAccessible && googleEngine) {
+                selectedEngine = googleEngine;
+                engineName = 'Google';
+                console.log('Google可访问，使用Google搜索');
+            } else if (bingEngine) {
+                selectedEngine = bingEngine;
+                engineName = 'Bing';
+                console.log('Google不可访问或未配置，使用Bing搜索');
+            } else {
+                throw new Error('没有可用的搜索引擎');
+            }
+            
+            // 恢复搜索图标并跳转
+            searchIcon.className = originalClass;
+            window.open(selectedEngine.url + encodeURIComponent(query), '_blank');
+            showNotification(`正在使用${engineName}搜索: ${query}`, 'success', 2000);
+            
+        } catch (error) {
+            console.error('搜索引擎检测失败:', error);
+            searchIcon.className = originalClass;
+            
+            // 降级处理：默认使用Bing
+            if (bingEngine) {
+                window.open(bingEngine.url + encodeURIComponent(query), '_blank');
+                showNotification(`网络检测失败，使用Bing搜索: ${query}`, 'info', 2000);
+            } else {
+                showNotification('搜索失败，请检查网络连接', 'error', 2000);
+            }
+        }
         
         // 隐藏建议框
         document.getElementById('search-suggestions').style.display = 'none';
@@ -941,46 +985,190 @@ function initThemeKeyboard() {
 }
 
 // 天气功能（增强版，支持定位记忆）
-let currentCity = '北京';
+// 全局变量：双天气框状态管理
+let weatherWidgets = {
+    custom: {
+        city: localStorage.getItem('weather_custom_city') || '北京',
+        mode: localStorage.getItem('weather_custom_mode') || 'manual', // manual 或 auto
+        displayId: 'weather-display-custom',
+        inputId: 'custom-location-input',
+        labelId: 'location-mode-label-custom',
+        inputContainerId: 'location-input-container-custom'
+    },
+    ip: {
+        city: localStorage.getItem('weather_ip_city') || '上海',
+        mode: localStorage.getItem('weather_ip_mode') || 'auto', // manual 或 auto
+        displayId: 'weather-display-ip',
+        inputId: 'ip-location-input',
+        labelId: 'location-mode-label-ip',
+        inputContainerId: 'location-input-container-ip'
+    }
+};
 let userLocation = null; // 用户的地理位置信息
 
 // 初始化天气功能
 async function initWeather() {
-    // 尝试获取用户的地理位置
-    await initUserLocation();
+    // 初始化定位模式UI
+    updateLocationModeUI('custom');
+    updateLocationModeUI('ip');
     
-    // 加载天气数据
-    loadWeatherData();
+    // 初始化IP定位天气框（如果设置为自动模式）
+    if (weatherWidgets.ip.mode === 'auto') {
+        await initIPLocation();
+    }
     
-    // 刷新天气按钮
-    document.getElementById('refresh-weather').addEventListener('click', function() {
-        this.style.animation = 'spin 1s ease-in-out';
-        setTimeout(() => {
-            this.style.animation = '';
-        }, 1000);
-        loadWeatherData();
-        showNotification('正在刷新天气信息...', 'info', 2000);
-    });
+    // 加载两个天气框的数据
+    loadWeatherData('custom');
+    loadWeatherData('ip');
     
-    // 更改城市按钮
-    document.getElementById('change-location').addEventListener('click', function() {
-        const newCity = prompt('请输入城市名称:', currentCity);
-        if (newCity && newCity.trim() !== '') {
-            currentCity = newCity.trim();
-            // 保存用户设置的城市到localStorage
-            localStorage.setItem('weather_user_city', currentCity);
-            localStorage.setItem('weather_location_type', 'manual'); // 标记为手动设置
+    // 绑定事件监听器
+    bindWeatherEvents();
+}
+
+// 初始化IP定位
+async function initIPLocation() {
+    try {
+        if ('geolocation' in navigator) {
+            const position = await new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject, {
+                    timeout: 5000,
+                    enableHighAccuracy: false
+                });
+            });
             
-            // 立即更新位置显示
-            const locationText = document.getElementById('location-text');
-            if (locationText) {
-                locationText.textContent = currentCity;
+            const { latitude, longitude } = position.coords;
+            const cityName = await getCityFromCoordinates(latitude, longitude);
+            
+            if (cityName) {
+                weatherWidgets.ip.city = cityName;
+                localStorage.setItem('weather_ip_city', cityName);
+                showNotification(`IP定位成功：${cityName}`, 'success', 3000);
             }
-            
-            loadWeatherData();
-            showNotification(`已切换到${currentCity}`, 'success', 2000);
         }
-    });
+    } catch (error) {
+        console.log('IP定位失败，使用默认城市:', error);
+        showNotification('IP定位失败，使用默认城市', 'warning', 3000);
+    }
+}
+
+// 绑定天气相关事件
+function bindWeatherEvents() {
+    // 自定义天气框事件
+    bindWeatherWidgetEvents('custom');
+    // IP天气框事件
+    bindWeatherWidgetEvents('ip');
+}
+
+// 绑定单个天气框的事件
+function bindWeatherWidgetEvents(widgetType) {
+    const widget = weatherWidgets[widgetType];
+    
+    // 刷新按钮
+    const refreshBtn = document.getElementById(`refresh-weather-${widgetType}`);
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', function() {
+            this.style.animation = 'spin 1s ease-in-out';
+            setTimeout(() => {
+                this.style.animation = '';
+            }, 1000);
+            loadWeatherData(widgetType);
+            showNotification('正在刷新天气信息...', 'info', 2000);
+        });
+    }
+    
+    // 切换定位模式按钮
+    const toggleBtn = document.getElementById(`toggle-location-mode-${widgetType}`);
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+            toggleLocationMode(widgetType);
+        });
+    }
+    
+    // 确认位置按钮
+    const confirmBtn = document.getElementById(`confirm-location-${widgetType}`);
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', function() {
+            const input = document.getElementById(widget.inputId);
+            const newCity = input.value.trim();
+            if (newCity) {
+                setWeatherCity(widgetType, newCity);
+                input.value = '';
+            }
+        });
+    }
+    
+    // 输入框回车确认
+    const input = document.getElementById(widget.inputId);
+    if (input) {
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const newCity = this.value.trim();
+                if (newCity) {
+                    setWeatherCity(widgetType, newCity);
+                    this.value = '';
+                }
+            }
+        });
+    }
+}
+
+// 切换定位模式（手动/自动）
+function toggleLocationMode(widgetType) {
+    const widget = weatherWidgets[widgetType];
+    const newMode = widget.mode === 'manual' ? 'auto' : 'manual';
+    
+    widget.mode = newMode;
+    localStorage.setItem(`weather_${widgetType}_mode`, newMode);
+    
+    updateLocationModeUI(widgetType);
+    
+    if (newMode === 'auto' && widgetType === 'ip') {
+        initIPLocation().then(() => {
+            loadWeatherData(widgetType);
+        });
+    }
+    
+    showNotification(`已切换到${newMode === 'manual' ? '手动指定' : '自动定位'}模式`, 'info', 2000);
+}
+
+// 更新定位模式UI
+function updateLocationModeUI(widgetType) {
+    const widget = weatherWidgets[widgetType];
+    const label = document.getElementById(widget.labelId);
+    const inputContainer = document.getElementById(widget.inputContainerId);
+    
+    if (label && inputContainer) {
+        if (widget.mode === 'manual') {
+            label.innerHTML = '<i class="fas fa-edit"></i> 手动指定';
+            inputContainer.style.display = 'block';
+        } else {
+            label.innerHTML = '<i class="fas fa-crosshairs"></i> 自动定位';
+            inputContainer.style.display = 'none';
+        }
+    }
+}
+
+// 设置天气城市
+function setWeatherCity(widgetType, city) {
+    const widget = weatherWidgets[widgetType];
+    widget.city = city;
+    widget.mode = 'manual';
+    
+    localStorage.setItem(`weather_${widgetType}_city`, city);
+    localStorage.setItem(`weather_${widgetType}_mode`, 'manual');
+    
+    updateLocationModeUI(widgetType);
+    loadWeatherData(widgetType);
+    
+    showNotification(`${widgetType === 'custom' ? '自定义' : 'IP'}天气已切换到${city}`, 'success', 2000);
+}
+
+// 从坐标获取城市名（模拟API）
+async function getCityFromCoordinates(lat, lng) {
+    // 这里应该调用真实的地理编码API，现在用模拟数据
+    const cities = ['北京', '上海', '广州', '深圳', '杭州', '南京', '成都', '武汉', '西安', '重庆'];
+    const randomIndex = Math.floor((lat + lng) * 1000) % cities.length;
+    return cities[Math.abs(randomIndex)];
 }
 
 // 初始化用户位置（自动获取或使用保存的位置）
@@ -1085,24 +1273,22 @@ async function getCityFromCoordinates(lat, lng) {
     }
 }
 
-function loadWeatherData() {
-    const weatherDisplay = document.getElementById('weather-display');
-    const locationText = document.getElementById('location-text');
-    
-    locationText.textContent = currentCity;
+function loadWeatherData(widgetType) {
+    const widget = weatherWidgets[widgetType];
+    const weatherDisplay = document.getElementById(widget.displayId);
     
     // 显示加载状态
     weatherDisplay.innerHTML = `
         <div class="weather-loading">
             <div class="loading-spinner"></div>
-            <span>正在获取天气信息...</span>
+            <span>正在获取${widget.city}的天气信息...</span>
         </div>
     `;
     
-    // 根据城市获取天气数据
+    // 模拟API延迟
     setTimeout(() => {
-        const weatherData = getWeatherByCity(currentCity);
-        displayWeatherData(weatherData);
+        const weatherData = getWeatherByCity(widget.city);
+        displayWeatherData(weatherData, widget.displayId);
     }, 1500);
 }
 
@@ -1187,8 +1373,8 @@ function generateForecast() {
     }));
 }
 
-function displayWeatherData(data) {
-    const weatherDisplay = document.getElementById('weather-display');
+function displayWeatherData(data, displayId) {
+    const weatherDisplay = document.getElementById(displayId || 'weather-display');
     
     weatherDisplay.innerHTML = `
         <div class="weather-info loaded">
@@ -1527,6 +1713,31 @@ async function checkNetworkStatus() {
         // 检测失败时默认使用Bing
         currentSearchEngine = 'bing';
         updateEngineDisplay('bing');
+    }
+}
+
+// 快速检测Google访问性（用于搜索时）
+async function checkGoogleAccessWithTimeout() {
+    try {
+        console.log('快速检测Google访问性...');
+        
+        // 使用更短的超时时间（1.5秒）确保搜索体验流畅
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 1500);
+        
+        const response = await fetch('https://www.google.com/favicon.ico', {
+            method: 'HEAD',
+            mode: 'no-cors',
+            signal: controller.signal,
+            cache: 'no-cache'
+        });
+        
+        clearTimeout(timeoutId);
+        console.log('Google访问检测: 可访问');
+        return true;
+    } catch (error) {
+        console.log('Google访问检测: 无法访问 -', error.message);
+        return false;
     }
 }
 
@@ -1949,10 +2160,10 @@ document.addEventListener('DOMContentLoaded', () => {
     startCardRefreshTimer(); // 启动卡片刷新定时器
     initCardEditing(); // 添加卡片编辑功能初始化
 
-    // 启动网络检测（延迟启动，避免阻塞页面加载）
-    setTimeout(() => {
-        checkNetworkStatus();
-    }, 1000);
+    // 启动网络检测已移除 - 现在在搜索时实时检测
+    // setTimeout(() => {
+    //     checkNetworkStatus();
+    // }, 1000);
 
     // 显示功能状态信息
     console.log('=== 星辰导航功能状态 ===');
@@ -2075,13 +2286,13 @@ document.addEventListener('DOMContentLoaded', () => {
         saveSettings();
     });
 
-    // 网络状态检测按钮
-    const refreshNetworkBtn = document.getElementById('refresh-network-btn');
-    if (refreshNetworkBtn) {
-        refreshNetworkBtn.addEventListener('click', function() {
-            refreshNetworkStatus();
-        });
-    }
+    // 网络状态检测按钮已移除 - 现在搜索时自动检测
+    // const refreshNetworkBtn = document.getElementById('refresh-network-btn');
+    // if (refreshNetworkBtn) {
+    //     refreshNetworkBtn.addEventListener('click', function() {
+    //         refreshNetworkStatus();
+    //     });
+    // }
 
     // 收藏栏开关
     const bookmarksSetting = document.getElementById('bookmarks-setting');
@@ -2106,8 +2317,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.querySelector('.search-text');
     const searchIcon = document.getElementById('search-icon');
     
+    console.log('搜索功能初始化:', { searchInput, searchIcon });
+    
+    if (!searchInput || !searchIcon) {
+        console.error('搜索元素未找到:', { searchInput, searchIcon });
+        return;
+    }
+    
     // 输入框内容变化时控制搜索图标显示
     searchInput.addEventListener('input', (e) => {
+        console.log('输入变化:', e.target.value);
         if (e.target.value.trim()) {
             searchIcon.classList.add('visible');
         } else {
@@ -2117,14 +2336,18 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 回车键搜索
     searchInput.addEventListener('keypress', (e) => {
+        console.log('按键事件:', e.key, '内容:', e.target.value);
         if (e.key === 'Enter' && e.target.value.trim()) {
+            console.log('执行回车搜索');
             performSearch();
         }
     });
     
     // 点击搜索图标搜索
     searchIcon.addEventListener('click', () => {
+        console.log('点击搜索图标', '内容:', searchInput.value);
         if (searchInput.value.trim()) {
+            console.log('执行点击搜索');
             performSearch();
         }
     });

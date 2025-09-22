@@ -358,31 +358,81 @@
 
         <!-- 小部件区域 -->
         <div class="widgets-container" style="width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 25px;">
-            <!-- 天气小部件 -->
-            <div class="widget">
+            <!-- 自定义天气小部件 -->
+            <div class="widget weather-widget-custom">
                 <div class="widget-header">
-                    <h3 class="widget-title"><i class="fas fa-cloud-sun"></i> 天气信息</h3>
+                    <h3 class="widget-title"><i class="fas fa-map-marker-alt"></i> 自定义天气</h3>
                     <div style="display: flex; gap: 10px;">
-                        <button class="note-btn" id="refresh-weather" title="刷新天气">
+                        <button class="note-btn" id="refresh-weather-custom" title="刷新天气">
                             <i class="fas fa-sync-alt"></i>
                         </button>
-                        <button class="note-btn" id="change-location" title="更改城市">
-                            <i class="fas fa-map-marker-alt"></i>
+                        <button class="note-btn" id="toggle-location-mode-custom" title="切换定位模式">
+                            <i class="fas fa-exchange-alt"></i>
                         </button>
                     </div>
                 </div>
                 <div class="widget-content">
-                    <!-- 天气部分 -->
-                    <div class="weather-display" id="weather-display">
-                        <div class="weather-loading">
-                            <div class="loading-spinner"></div>
-                            <span>正在获取天气信息...</span>
+                    <!-- 地区选择部分 -->
+                    <div class="weather-location-selector" id="weather-location-selector-custom">
+                        <div class="location-mode-info">
+                            <span class="location-mode-label" id="location-mode-label-custom">
+                                <i class="fas fa-edit"></i> 手动指定
+                            </span>
+                        </div>
+                        <div class="location-input-container" id="location-input-container-custom">
+                            <div class="custom-location-input">
+                                <input type="text" id="custom-location-input" placeholder="请输入城市名称..." class="location-input">
+                                <button class="location-confirm-btn" id="confirm-location-custom">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div class="weather-location" id="weather-location" style="margin-top: 15px;">
-                        <div class="weather-location-info">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span id="location-text">获取位置中...</span>
+                    <!-- 天气显示部分 -->
+                    <div class="weather-display" id="weather-display-custom">
+                        <div class="weather-loading">
+                            <div class="loading-spinner"></div>
+                            <span>请选择城市...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IP定位天气小部件 -->
+            <div class="widget weather-widget-ip">
+                <div class="widget-header">
+                    <h3 class="widget-title"><i class="fas fa-globe"></i> 当前位置天气</h3>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="note-btn" id="refresh-weather-ip" title="刷新天气">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button class="note-btn" id="toggle-location-mode-ip" title="切换定位模式">
+                            <i class="fas fa-exchange-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="widget-content">
+                    <!-- 地区选择部分 -->
+                    <div class="weather-location-selector" id="weather-location-selector-ip">
+                        <div class="location-mode-info">
+                            <span class="location-mode-label" id="location-mode-label-ip">
+                                <i class="fas fa-crosshairs"></i> IP定位
+                            </span>
+                        </div>
+                        <div class="location-input-container" id="location-input-container-ip" style="display: none;">
+                            <div class="custom-location-input">
+                                <input type="text" id="ip-location-input" placeholder="请输入城市名称..." class="location-input">
+                                <button class="location-confirm-btn" id="confirm-location-ip">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 天气显示部分 -->
+                    <div class="weather-display" id="weather-display-ip">
+                        <div class="weather-loading">
+                            <div class="loading-spinner"></div>
+                            <span>正在获取位置信息...</span>
                         </div>
                     </div>
                 </div>
